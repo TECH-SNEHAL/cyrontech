@@ -42,19 +42,38 @@ export function CTA() {
             one business day.
           </p>
 
-          <div className="relative mt-8 flex items-center gap-3 rounded-xl bg-background/[0.06] p-3.5">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15">
-              <Mail className="size-4 text-primary" />
-            </span>
-            <div>
-              <p className="text-xs text-background/40">Email us</p>
-              <a
-                href="mailto:contact@cyrontech.in"
-                className="text-sm font-medium transition hover:text-primary"
-              >
-                contact@cyrontech.in
-              </a>
+          <div className="relative mt-8 space-y-3">
+            <div className="flex items-center gap-3 rounded-xl bg-background/[0.06] p-3.5">
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/15">
+                <Mail className="size-4 text-primary" />
+              </span>
+              <div>
+                <p className="text-xs text-background/40">Email us</p>
+                <a
+                  href="mailto:contact@cyrontech.in"
+                  className="text-sm font-medium transition hover:text-primary"
+                >
+                  contact@cyrontech.in
+                </a>
+              </div>
             </div>
+
+            <a
+              href="https://wa.me/919491990628?text=Hi%20Cyron%20Tech%2C%20I%27d%20like%20to%20enquire%20about%20a%20project."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-3 rounded-xl bg-background/[0.06] p-3.5 transition hover:bg-background/[0.1]"
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#25D366]/20">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="size-4 text-[#25D366]" aria-hidden="true">
+                  <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.86 9.86 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm4.86 13.73c-.25.69-1.43 1.32-2 1.41-.51.07-1.16.1-1.87-.12-.43-.14-.98-.33-1.69-.63-2.98-1.29-4.93-4.29-5.08-4.49-.15-.2-1.22-1.61-1.22-3.08s.77-2.18 1.04-2.48c.27-.3.59-.37.79-.37h.57c.19.01.43-.07.67.51.25.59.84 2.05.92 2.2.07.15.12.32.02.52-.1.2-.15.33-.3.5-.15.17-.32.39-.45.52-.15.14-.3.3-.13.6.17.3.77 1.27 1.65 2.06 1.13 1.01 2.08 1.32 2.38 1.47.29.14.47.12.64-.08.17-.2.74-.86.94-1.16.2-.3.4-.25.67-.15.27.1 1.72.81 2.02.96.3.15.5.22.57.35.08.13.08.72-.17 1.41z" />
+                </svg>
+              </span>
+              <div>
+                <p className="text-xs text-background/40">WhatsApp us</p>
+                <p className="text-sm font-medium">+91 94919 90628</p>
+              </div>
+            </a>
           </div>
         </div>
 
