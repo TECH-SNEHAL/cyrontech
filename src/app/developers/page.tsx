@@ -96,9 +96,55 @@ const STACK = [
   { group: "Ops", items: ["Docker", "AWS", "CI/CD", "Monitoring"] },
 ];
 
+const PAGE_DESCRIPTION = `${DEV.name} — ${DEV.role} at Cyron Tech. Websites, mobile apps, CRMs, and automation built around how a business actually works.`;
+
 export const metadata: Metadata = {
   title: "Developers",
-  description: `${DEV.name} — ${DEV.role} at Cyron Tech. Websites, mobile apps, CRMs, and automation built around how a business actually works.`,
+  description: PAGE_DESCRIPTION,
+  alternates: {
+    canonical: "/developers",
+  },
+  openGraph: {
+    type: "profile",
+    url: "/developers",
+    title: `${DEV.name} — ${DEV.role}`,
+    description: PAGE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${DEV.name} — ${DEV.role}`,
+    description: PAGE_DESCRIPTION,
+  },
+};
+
+const SITE_URL = "https://cyrontech.in";
+
+// Scoped to what the page actually states — no invented street address, so
+// this is a Person tied to the Organization rather than a standalone
+// LocalBusiness listing.
+const PERSON_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: DEV.name,
+  jobTitle: DEV.role,
+  url: `${SITE_URL}/developers`,
+  email: `mailto:${DEV.email}`,
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+  sameAs: [DEV.linkedin],
+};
+
+const BREADCRUMB_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Cyron Tech", item: SITE_URL },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Developers",
+      item: `${SITE_URL}/developers`,
+    },
+  ],
 };
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
@@ -116,6 +162,19 @@ export default function DevelopersPage() {
     <main
       className={`${display.variable} relative min-h-screen bg-background text-foreground`}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(PERSON_JSON_LD).replace(/</g, "\\u003c"),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(BREADCRUMB_JSON_LD).replace(/</g, "\\u003c"),
+        }}
+      />
+
       {/* ---------- top bar ---------- */}
       <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-8">
         <Link
