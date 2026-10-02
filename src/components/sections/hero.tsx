@@ -1,14 +1,21 @@
 "use client";
 
+import { useRef } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { WhatWeMake } from "@/components/what-we-make";
+import { SpiderCursor } from "@/components/ui/spider-cursor";
 
 const EXPERTISE = ["Web", "Mobile", "Cloud", "UI/UX", "CRM", "Automation"];
 
 export function Hero() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="relative overflow-hidden bg-background pb-20 pt-32 md:pb-28">
+    <div
+      ref={sectionRef}
+      className="relative overflow-hidden bg-background pb-20 pt-32 md:pb-28"
+    >
       {/* brand glow and dot grid are both painted once by CSS — no per-frame cost */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -29,6 +36,11 @@ export function Hero() {
             "radial-gradient(70% 60% at 50% 40%, black, transparent 100%)",
         }}
       />
+      {/* spiders that crawl after the cursor, spinning web strands */}
+      <SpiderCursor
+        containerRef={sectionRef}
+        className="pointer-events-none absolute inset-0"
+      />
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 md:px-12 lg:grid-cols-2">
         <motion.div
@@ -36,12 +48,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
-            <Sparkles className="size-3.5" />
-            Trusted Technology Partner
-          </span>
-
-          <h1 className="mt-6 text-balance text-5xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-6xl">
+          <h1 className="text-balance text-5xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-6xl">
             Software built around{" "}
             <span className="bg-gradient-to-r from-primary to-brand-blue bg-clip-text text-transparent">
               your business, not ours
