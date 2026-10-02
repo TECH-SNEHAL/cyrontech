@@ -3,7 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { Fraunces } from "next/font/google";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
-import { Reveal } from "@/components/reveal";
+import { Reveal, Stagger, StaggerItem } from "@/components/reveal";
+import { Parallax } from "@/components/parallax";
+import { WorkList } from "@/components/work-list";
 import { Marquee } from "@/components/ui/marquee";
 
 const display = Fraunces({
@@ -205,14 +207,16 @@ export default function DevelopersPage() {
 
           <Reveal delay={0.15}>
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-sm bg-secondary">
-              <Image
-                src="/team/lead-developer.png"
-                alt={`${DEV.name}, ${DEV.role} at Cyron Tech`}
-                fill
-                preload
-                sizes="(min-width: 768px) 22rem, 90vw"
-                className="object-cover"
-              />
+              <Parallax strength={24} className="absolute inset-[-8%]">
+                <Image
+                  src="/team/lead-developer.png"
+                  alt={`${DEV.name}, ${DEV.role} at Cyron Tech`}
+                  fill
+                  preload
+                  sizes="(min-width: 768px) 22rem, 90vw"
+                  className="object-cover"
+                />
+              </Parallax>
             </div>
           </Reveal>
         </div>
@@ -268,53 +272,7 @@ export default function DevelopersPage() {
             <SectionLabel>Selected work</SectionLabel>
           </Reveal>
 
-          <ul className="mt-12">
-            {WORK.map((w, i) => (
-              <li key={w.name}>
-                <Reveal delay={Math.min(i, 3) * 0.04}>
-                  <div className="group relative border-t border-border">
-                    <div className="flex flex-col gap-2 py-8 transition-[padding] duration-300 ease-out sm:flex-row sm:items-baseline sm:gap-8 sm:group-hover:pl-5">
-                      <span className="font-mono text-xs text-foreground/30">
-                        {String(i + 1).padStart(2, "0")}
-                      </span>
-                      <div className="flex-1">
-                        <h3
-                          className="text-2xl tracking-tight transition-colors duration-300 group-hover:text-primary sm:text-4xl"
-                          style={{ fontFamily: "var(--font-display)" }}
-                        >
-                          {w.name}
-                        </h3>
-                        <p className="mt-2 max-w-sm text-sm text-foreground/50">
-                          {w.note}
-                        </p>
-                      </div>
-                      <span className="text-sm text-foreground/40 sm:w-44 sm:text-right">
-                        {w.kind}
-                      </span>
-                      <span className="font-mono text-xs text-foreground/30 sm:w-12 sm:text-right">
-                        {w.year}
-                      </span>
-                    </div>
-
-                    {/* desktop hover preview — opacity + transform only, no JS */}
-                    <div
-                      aria-hidden
-                      className="pointer-events-none absolute right-[16%] top-1/2 z-10 hidden h-48 w-80 -translate-y-1/2 rotate-[-3deg] scale-95 overflow-hidden rounded-sm opacity-0 shadow-2xl shadow-black/25 transition-[opacity,transform] duration-300 ease-out group-hover:rotate-0 group-hover:scale-100 group-hover:opacity-100 lg:block"
-                    >
-                      <Image
-                        src={w.image}
-                        alt=""
-                        fill
-                        sizes="20rem"
-                        className="object-cover object-top"
-                      />
-                    </div>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ul>
-          <div className="border-t border-border" />
+          <WorkList items={WORK} />
 
           <Reveal delay={0.1}>
             <Link
@@ -334,9 +292,9 @@ export default function DevelopersPage() {
           <Reveal>
             <SectionLabel>How I work</SectionLabel>
           </Reveal>
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-3">
+          <Stagger className="grid grid-cols-1 gap-10 sm:grid-cols-3">
             {APPROACH.map((a, i) => (
-              <Reveal key={a.title} delay={i * 0.06}>
+              <StaggerItem key={a.title}>
                 <span className="font-mono text-xs text-foreground/30">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -349,9 +307,9 @@ export default function DevelopersPage() {
                 <p className="mt-3 text-sm leading-relaxed text-foreground/55">
                   {a.body}
                 </p>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -361,9 +319,9 @@ export default function DevelopersPage() {
           <Reveal>
             <SectionLabel>Stack</SectionLabel>
           </Reveal>
-          <div className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-            {STACK.map((s, i) => (
-              <Reveal key={s.group} delay={i * 0.05}>
+          <Stagger className="grid grid-cols-1 gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+            {STACK.map((s) => (
+              <StaggerItem key={s.group}>
                 <h3 className="text-sm font-semibold text-foreground">
                   {s.group}
                 </h3>
@@ -372,9 +330,9 @@ export default function DevelopersPage() {
                     <li key={item}>{item}</li>
                   ))}
                 </ul>
-              </Reveal>
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         </div>
       </section>
 
@@ -385,13 +343,15 @@ export default function DevelopersPage() {
             <SectionLabel>Get in touch</SectionLabel>
           </Reveal>
           <Reveal delay={0.05}>
-            <a
-              href={`mailto:${DEV.email}`}
-              className="mt-8 block text-balance text-[2.5rem] leading-[1.05] tracking-[-0.02em] transition-colors hover:text-primary sm:text-7xl"
-              style={{ fontFamily: "var(--font-display)" }}
-            >
-              {DEV.email}
-            </a>
+            <Parallax strength={14}>
+              <a
+                href={`mailto:${DEV.email}`}
+                className="mt-8 block text-balance text-[2.5rem] leading-[1.05] tracking-[-0.02em] transition-colors hover:text-primary sm:text-7xl"
+                style={{ fontFamily: "var(--font-display)" }}
+              >
+                {DEV.email}
+              </a>
+            </Parallax>
             <p className="mt-10 max-w-md text-base leading-relaxed text-foreground/50">
               Tell me what you&apos;re trying to build. If it&apos;s a fit,
               you&apos;ll hear back within a business day.
