@@ -27,7 +27,7 @@ function initials(name: string) {
 
 function ReviewCard({ review }: { review: (typeof REVIEWS)[number] }) {
   return (
-    <Card className="w-72 border-border bg-card">
+    <Card className="w-72 shrink-0 border-border bg-card">
       <CardContent>
         <blockquote className="text-sm leading-relaxed text-foreground/70">
           &ldquo;{review.body}&rdquo;
@@ -49,10 +49,11 @@ function ReviewCard({ review }: { review: (typeof REVIEWS)[number] }) {
 }
 
 export function Testimonials() {
-  const col1 = REVIEWS.slice(0, 2);
-  const col2 = REVIEWS.slice(2, 4);
-  const col3 = REVIEWS.slice(4, 6);
-  const col4 = REVIEWS.slice(6, 8);
+  // three taller columns beat four short ones: each copy is already longer than
+  // the track, so fewer duplicates are needed to loop without a visible gap
+  const col1 = REVIEWS.slice(0, 3);
+  const col2 = REVIEWS.slice(3, 6);
+  const col3 = REVIEWS.slice(6, 8);
 
   return (
     <section id="testimonials" className="relative z-10 border-t border-border px-6 py-24 md:px-12">
@@ -70,14 +71,14 @@ export function Testimonials() {
           Don&apos;t just take our word for it
         </h2>
         <p className="mt-4 text-base leading-relaxed text-foreground/50">
-          See what our clients say about working with us and what it's like
+          See what our clients say about working with us, and what it&apos;s like
           to have Cyron Tech build for you.
         </p>
       </motion.div>
 
       {/* mobile: single horizontal row */}
       <div className="relative mx-auto max-w-[100rem] overflow-hidden sm:hidden">
-        <Marquee pauseOnHover className="[--duration:32s]">
+        <Marquee pauseOnHover repeat={2} className="[--duration:40s]">
           {REVIEWS.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
@@ -87,24 +88,19 @@ export function Testimonials() {
       </div>
 
       {/* desktop: 4 vertical columns */}
-      <div className="relative mx-auto hidden h-[34rem] max-w-[100rem] gap-4 overflow-hidden sm:grid sm:grid-cols-2 lg:grid-cols-4">
-        <Marquee vertical pauseOnHover className="h-full [--duration:28s]">
+      <div className="relative mx-auto hidden h-[34rem] max-w-7xl gap-4 overflow-hidden sm:grid sm:grid-cols-2 lg:grid-cols-3">
+        <Marquee vertical pauseOnHover repeat={2} className="h-full [--duration:36s]">
           {col1.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>
-        <Marquee vertical reverse pauseOnHover className="h-full [--duration:28s]">
+        <Marquee vertical reverse pauseOnHover repeat={2} className="h-full [--duration:36s]">
           {col2.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>
-        <Marquee vertical pauseOnHover className="hidden h-full [--duration:28s] lg:flex">
+        <Marquee vertical pauseOnHover repeat={3} className="hidden h-full [--duration:36s] lg:flex">
           {col3.map((r) => (
-            <ReviewCard key={r.name + r.role} review={r} />
-          ))}
-        </Marquee>
-        <Marquee vertical reverse pauseOnHover className="hidden h-full [--duration:28s] lg:flex">
-          {col4.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>

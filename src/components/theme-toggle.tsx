@@ -1,44 +1,31 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+  const { setTheme } = useTheme();
 
-  useEffect(() => setMounted(true), []);
-
-  if (!mounted) {
-    return (
-      <div
-        className={cn(
-          "size-9 rounded-full border border-foreground/15 bg-foreground/5",
-          className
-        )}
-      />
-    );
-  }
-
-  const isDark = resolvedTheme === "dark";
-
+  // The icon swap is driven by the `dark` class that next-themes already puts on
+  // <html>, so the button renders the same on the server and the client. That
+  // removes the mounted-flag effect this used to need to avoid a mismatch.
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      onClick={() =>
+        setTheme(
+          document.documentElement.classList.contains("dark") ? "light" : "dark"
+        )
+      }
+      aria-label="Toggle dark mode"
       className={cn(
-        "inline-flex size-9 items-center justify-center rounded-full border border-foreground/15 bg-foreground/5 text-foreground/70 backdrop-blur-sm transition hover:border-foreground/25 hover:text-foreground",
+        "inline-flex size-9 items-center justify-center rounded-full border border-foreground/15 bg-foreground/5 text-foreground/70 transition hover:border-foreground/25 hover:text-foreground",
         className
       )}
     >
-      {isDark ? (
-        <Sun className="size-4" strokeWidth={1.75} />
-      ) : (
-        <Moon className="size-4" strokeWidth={1.75} />
-      )}
+      <Moon className="size-4 dark:hidden" strokeWidth={1.75} />
+      <Sun className="hidden size-4 dark:block" strokeWidth={1.75} />
     </button>
   );
 }

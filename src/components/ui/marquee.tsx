@@ -26,22 +26,15 @@ interface MarqueeProps extends ComponentPropsWithoutRef<'div'> {
    */
   vertical?: boolean;
   /**
-   * Number of times to repeat the content
-   * @default 4
+   * Number of copies of the content. Enough copies must be rendered to cover
+   * the track plus one full copy, or a gap appears at the loop point.
+   * @default 3
    */
   repeat?: number;
   /**
-   * ARIA label for accessibility
+   * Accessible label for the region, when the content is not purely decorative
    */
   ariaLabel?: string;
-  /**
-   * ARIA live region politeness
-   */
-  ariaLive?: 'off' | 'polite' | 'assertive';
-  /**
-   * ARIA role
-   */
-  ariaRole?: string;
 }
 
 export function Marquee({
@@ -50,16 +43,16 @@ export function Marquee({
   pauseOnHover = false,
   children,
   vertical = false,
-  repeat = 4,
+  repeat = 3,
   ariaLabel,
-  ariaLive = 'off',
-  ariaRole = 'marquee',
   ...props
 }: MarqueeProps) {
   return (
     <div
       {...props}
       data-slot="marquee"
+      aria-label={ariaLabel}
+      aria-roledescription={ariaLabel ? 'carousel' : undefined}
       className={cn(
         'group flex overflow-hidden p-2 [--duration:40s] [--gap:1rem] [gap:var(--gap)]',
         {
@@ -68,14 +61,12 @@ export function Marquee({
         },
         className,
       )}
-      aria-label={ariaLabel}
-      aria-live={ariaLive}
-      role={ariaRole}
-      tabIndex={0}
     >
       {Array.from({ length: repeat }, (_, i) => (
         <div
           key={i}
+          // only the first copy is read out; the rest are visual duplicates
+          aria-hidden={i > 0 ? true : undefined}
           className={cn(
             !vertical ? 'flex-row [gap:var(--gap)]' : 'flex-col [gap:var(--gap)]',
             'flex shrink-0 justify-around',

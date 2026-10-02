@@ -1,27 +1,15 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { ScatterText } from "@/components/scatter-text";
 import { WhatWeMake } from "@/components/what-we-make";
-import { SpiderCursor } from "@/components/ui/spider-cursor";
 
 const EXPERTISE = ["Web", "Mobile", "Cloud", "UI/UX", "CRM", "Automation"];
 
 export function Hero() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start start", "end start"],
-  });
-
   return (
-    <div
-      ref={sectionRef}
-      className="relative overflow-hidden bg-background pb-20 pt-32 md:pb-28"
-    >
-      {/* warm radial glow */}
+    <div className="relative overflow-hidden bg-background pb-20 pt-32 md:pb-28">
+      {/* brand glow and dot grid are both painted once by CSS — no per-frame cost */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -29,32 +17,25 @@ export function Hero() {
             "radial-gradient(600px circle at 15% 20%, color-mix(in oklch, var(--primary) 18%, transparent), transparent 60%), radial-gradient(500px circle at 85% 60%, color-mix(in oklch, var(--brand-blue) 14%, transparent), transparent 60%)",
         }}
       />
-      {/* static dot grid — pure CSS, so it costs nothing per frame */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.28] dark:opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 opacity-[0.18] dark:opacity-[0.25]"
         style={{
-          backgroundImage: "radial-gradient(var(--foreground) 1.5px, transparent 1.5px)",
+          backgroundImage:
+            "radial-gradient(var(--foreground) 1.5px, transparent 1.5px)",
           backgroundSize: "22px 22px",
+          maskImage:
+            "radial-gradient(70% 60% at 50% 40%, black, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(70% 60% at 50% 40%, black, transparent 100%)",
         }}
-      />
-      {/* spiders that crawl after the cursor, spinning web strands */}
-      <SpiderCursor
-        containerRef={sectionRef}
-        className="pointer-events-none absolute inset-0"
       />
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 md:px-12 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
         >
-          <ScatterText
-            text="Cyron Tech"
-            progress={scrollYProgress}
-            className="mb-5 text-4xl font-extrabold tracking-tight text-primary sm:text-5xl"
-          />
-
           <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-1.5 text-xs font-medium text-primary">
             <Sparkles className="size-3.5" />
             Trusted Technology Partner
@@ -110,9 +91,9 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: 30 }}
+          initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
+          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           className="hidden lg:block"
         >
           <WhatWeMake />

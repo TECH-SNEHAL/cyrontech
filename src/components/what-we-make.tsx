@@ -29,11 +29,7 @@ const OFFERINGS = [
 
 export function WhatWeMake() {
   return (
-    <motion.div
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      className="rounded-2xl border border-border bg-card/80 p-6 shadow-2xl shadow-black/10 backdrop-blur-sm"
-    >
+    <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-2xl shadow-black/10 backdrop-blur-sm">
       <span className="text-xs font-semibold uppercase tracking-widest text-primary">
         What we make
       </span>
@@ -65,6 +61,6 @@ export function WhatWeMake() {
           </motion.div>
         ))}
       </div>
-    </motion.div>
+    </div>
   );
 }

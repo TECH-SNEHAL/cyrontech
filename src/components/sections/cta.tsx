@@ -6,14 +6,41 @@ import { Check, Mail, Send } from "lucide-react";
 
 const SERVICES = ["Website", "App", "CRM", "Automation", "Desktop Application", "Other"];
 
+const INBOX = "contact@cyrontech.in";
+const WHATSAPP_NUMBER = "919491990628";
+
+const FIELD =
+  "rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20";
+
 export function CTA() {
-  const [submitted, setSubmitted] = useState(false);
+  const [sentTo, setSentTo] = useState<string | null>(null);
   const [name, setName] = useState("");
 
+  // There is no backend yet, so the form hands the enquiry to the visitor's own
+  // mail client instead of pretending to deliver it. Swap this for a POST to an
+  // API route once an email provider or CRM endpoint exists.
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    // TODO: wire this up to your CRM/email provider or a simple API route.
-    setSubmitted(true);
+    const data = new FormData(e.currentTarget);
+    const get = (k: string) => String(data.get(k) ?? "").trim();
+
+    const body = [
+      `Name: ${get("name")}`,
+      `Email: ${get("email")}`,
+      get("phone") && `Phone: ${get("phone")}`,
+      get("service") && `Service: ${get("service")}`,
+      "",
+      get("message"),
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    const subject = `Project enquiry from ${get("name") || "the website"}`;
+    window.location.href = `mailto:${INBOX}?subject=${encodeURIComponent(
+      subject
+    )}&body=${encodeURIComponent(body)}`;
+
+    setSentTo(get("name"));
   }
 
   return (
@@ -22,7 +49,7 @@ export function CTA() {
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5 }}
         className="mx-auto grid max-w-6xl grid-cols-1 overflow-hidden rounded-3xl border border-border shadow-xl shadow-black/5 lg:grid-cols-2"
       >
         {/* left panel */}
@@ -50,16 +77,18 @@ export function CTA() {
               <div>
                 <p className="text-xs text-background/40">Email us</p>
                 <a
-                  href="mailto:contact@cyrontech.in"
+                  href={`mailto:${INBOX}`}
                   className="text-sm font-medium transition hover:text-primary"
                 >
-                  contact@cyrontech.in
+                  {INBOX}
                 </a>
               </div>
             </div>
 
             <a
-              href="https://wa.me/919491990628?text=Hi%20Cyron%20Tech%2C%20I%27d%20like%20to%20enquire%20about%20a%20project."
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+                "Hi Cyron Tech, I'd like to enquire about a project."
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl bg-background/[0.06] p-3.5 transition hover:bg-background/[0.1]"
@@ -79,17 +108,35 @@ export function CTA() {
 
         {/* right panel */}
         <div className="bg-card p-10 sm:p-12">
-          {submitted ? (
+          {sentTo !== null ? (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <div className="flex size-12 items-center justify-center rounded-full bg-emerald-500/10">
                 <Check className="size-6 text-emerald-500" />
               </div>
               <p className="mt-4 text-lg font-semibold text-foreground">
-                Thanks{name ? `, ${name}` : ""} — message sent.
+                Thanks{sentTo ? `, ${sentTo}` : ""} — your email is ready to send.
               </p>
               <p className="mt-1 text-sm text-foreground/50">
-                We&apos;ll get back to you within one business day.
+                Your mail app should have opened with the details filled in. If
+                it didn&apos;t, reach us directly:
               </p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm">
+                <a
+                  href={`mailto:${INBOX}`}
+                  className="font-medium text-primary hover:underline"
+                >
+                  {INBOX}
+                </a>
+                <span className="text-foreground/25">or</span>
+                <a
+                  href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-primary hover:underline"
+                >
+                  WhatsApp
+                </a>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -99,11 +146,13 @@ export function CTA() {
                     Name <span className="text-primary">*</span>
                   </span>
                   <input
+                    name="name"
                     required
+                    autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your full name"
-                    className="rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+                    className={FIELD}
                   />
                 </label>
                 <label className="flex flex-col gap-1.5 text-sm">
@@ -111,10 +160,12 @@ export function CTA() {
                     Email <span className="text-primary">*</span>
                   </span>
                   <input
+                    name="email"
                     type="email"
                     required
+                    autoComplete="email"
                     placeholder="you@company.com"
-                    className="rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+                    className={FIELD}
                   />
                 </label>
               </div>
@@ -125,22 +176,19 @@ export function CTA() {
                     Phone <span className="text-foreground/40">(optional)</span>
                   </span>
                   <input
+                    name="phone"
                     type="tel"
+                    autoComplete="tel"
                     placeholder="+91 00000 00000"
-                    className="rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+                    className={FIELD}
                   />
                 </label>
                 <label className="flex flex-col gap-1.5 text-sm">
                   <span className="font-medium text-foreground">
                     Service <span className="text-foreground/40">(optional)</span>
                   </span>
-                  <select
-                    defaultValue=""
-                    className="rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
-                  >
-                    <option value="" disabled>
-                      Select a service
-                    </option>
+                  <select name="service" defaultValue="" className={FIELD}>
+                    <option value="">Select a service</option>
                     {SERVICES.map((s) => (
                       <option key={s} value={s}>
                         {s}
@@ -155,10 +203,11 @@ export function CTA() {
                   Message <span className="text-primary">*</span>
                 </span>
                 <textarea
+                  name="message"
                   required
                   rows={4}
                   placeholder="Tell us about your project, goals, and timeline..."
-                  className="resize-none rounded-lg border border-border bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-foreground/30 outline-none transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20"
+                  className={`resize-none ${FIELD}`}
                 />
               </label>
 

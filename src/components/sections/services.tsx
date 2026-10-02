@@ -11,7 +11,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/spotlight-card";
-import { TiltCard } from "@/components/tilt-card";
 
 const SERVICES = [
   {
@@ -111,9 +110,9 @@ export function Services() {
           {SERVICES.map((s, i) => {
             const Icon = s.icon;
             return (
-              <TiltCard
+              <div
                 key={s.title}
-                className="rounded-2xl border border-border bg-card p-6 transition-[border-color,box-shadow] duration-300 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10"
+                className="group rounded-2xl border border-border bg-card p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex size-11 items-center justify-center rounded-xl bg-accent transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
@@ -150,7 +149,7 @@ export function Services() {
                   Talk to us
                   <ArrowRight className="size-3.5" />
                 </span>
-              </TiltCard>
+              </div>
             );
           })}
         </motion.div>
