@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Check, ChevronDown, Copy } from "lucide-react";
+import { ArrowUpRight, Check, ChevronDown, Copy, Moon, Sun } from "lucide-react";
 import { CountUp } from "@/components/count-up";
-import { ThemeToggle } from "@/components/theme-toggle";
 import "./portfolio.css";
 
 type LogTag = "work" | "education" | "leadership";
@@ -482,6 +481,8 @@ export default function Portfolio() {
   const [live, setLive] = useState(false);
   const [logFilter, setLogFilter] = useState<LogTag | "all">("all");
   const [logOpen, setLogOpen] = useState<number | null>(0);
+  // The page keeps its own theme. It opens light on every visit, whatever the main site is set to.
+  const [dark, setDark] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const picked = useRef(false);
@@ -569,7 +570,7 @@ export default function Portfolio() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <div className="pf-root">
+    <div className={dark ? "pf-root dark" : "pf-root"}>
       <div className="site">
         <header>
           <button className="brand" onClick={() => go("top")}>
@@ -586,7 +587,15 @@ export default function Portfolio() {
               </button>
             ))}
           </nav>
-          <ThemeToggle className="theme" />
+          <button
+            type="button"
+            className="theme"
+            aria-label="Toggle dark mode"
+            aria-pressed={dark}
+            onClick={() => setDark((d) => !d)}
+          >
+            {dark ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}
+          </button>
         </header>
 
         <main id="top">
@@ -600,6 +609,7 @@ export default function Portfolio() {
                 sizes="(max-width: 800px) 320px, 860px"
                 quality={95}
                 loading="eager"
+                fetchPriority="high"
               />
             </div>
             <div className="eyebrow">
@@ -668,7 +678,6 @@ export default function Portfolio() {
                                 alt=""
                                 width={18}
                                 height={18}
-                                loading="lazy"
                                 decoding="async"
                               />
                             )}
@@ -874,6 +883,9 @@ becomes something people can use.
                             fill
                             sizes="(max-width: 800px) 100vw, 1200px"
                             quality={95}
+                            // Fetched up front with the other screenshots, behind the hero photo.
+                            loading="eager"
+                            fetchPriority="low"
                           />
                         </div>
                       ) : (
@@ -886,6 +898,8 @@ becomes something people can use.
                               // About twice the frame width, so small app text stays readable.
                               sizes="640px"
                               quality={95}
+                              loading="eager"
+                              fetchPriority="low"
                             />
                           </div>
                         </div>

@@ -1,8 +1,12 @@
 /* Portfolio styles, scoped under .pf-root so they do not affect the rest of the site. */
-/* Every colour is a variable: the light set is white and blue, the dark set (the site's `dark`
-   class on <html>) is near-black and lime green. */
+/* Every colour is a variable: the light set is white and blue, the dark set (the `dark` class
+   the theme button puts on .pf-root) is near-black and lime green. */
 .pf-root{--bg:#ffffff;--fg:#1e3a8a;--muted:#3b5b8c;--faint:#64748b;--line:#bfdbfe;--edge:#dbeafe;--frame:#93c5fd;--dotc:#bfdbfe;--link:#cfdff5;--surface:#ffffff;--card:#f5f9ff;--soft:#eff6ff;--head:rgba(255,255,255,.92);--accent:#2563eb;--accent-2:#3b82f6;--accent-ink:#1d4ed8;--chip-ink:#1e40af;--on-accent:#ffffff;--on-accent-muted:#dbeafe;--code:#5b7299;--node-ink:#6b84ad;--glow:rgba(37,99,235,.45);--glow-frame:rgba(37,99,235,.35);--dots:.12}
-.dark .pf-root{--bg:#0a0c08;--fg:#eef2e6;--muted:#a4ad98;--faint:#7f8a73;--line:#2a3320;--edge:#232b1a;--frame:#4d7c0f;--dotc:#46562f;--link:#333f25;--surface:#141810;--card:#0f120c;--soft:#182012;--head:rgba(10,12,8,.88);--accent:#a3e635;--accent-2:#bef264;--accent-ink:#bef264;--chip-ink:#d9f99d;--on-accent:#0f1a04;--on-accent-muted:#365314;--code:#96a388;--node-ink:#8f9b80;--glow:rgba(163,230,53,.2);--glow-frame:rgba(163,230,53,.16);--dots:.07}
+.pf-root.dark{--bg:#0a0c08;--fg:#eef2e6;--muted:#a4ad98;--faint:#7f8a73;--line:#2a3320;--edge:#232b1a;--frame:#4d7c0f;--dotc:#46562f;--link:#333f25;--surface:#141810;--card:#0f120c;--soft:#182012;--head:rgba(10,12,8,.88);--accent:#a3e635;--accent-2:#bef264;--accent-ink:#bef264;--chip-ink:#d9f99d;--on-accent:#0f1a04;--on-accent-muted:#365314;--code:#96a388;--node-ink:#8f9b80;--glow:rgba(163,230,53,.2);--glow-frame:rgba(163,230,53,.16);--dots:.07}
+/* While this page is open the scrollbar follows its theme, not the one saved for the main site
+   (which the site sets as an inline style on <html>, hence !important). */
+html:has(.pf-root){color-scheme:light!important}
+html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root *{box-sizing:border-box}
 .pf-root{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-pf-sans),system-ui,sans-serif}
 .pf-root:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--dots);background-image:radial-gradient(var(--accent) .5px,transparent .5px);background-size:5px 5px}
@@ -18,9 +22,7 @@
 .pf-root nav button.on,
 .pf-root nav button:hover,
 .pf-root .socials a:hover{color:var(--fg)}
-/* The site's theme button, recoloured to this page's palette. */
-.pf-root .theme,
-.pf-root .theme:hover{border-color:var(--line);background:var(--surface);color:var(--accent)}
+.pf-root .theme{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--accent);cursor:pointer;transition:border-color .2s}
 .pf-root .theme:hover{border-color:var(--accent)}
 .pf-root .theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .pf-root .hero{min-height:720px;padding:56px 0 96px;position:relative}
@@ -47,7 +49,7 @@
 .pf-root .term dd span{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--edge);background:var(--surface);padding:7px 11px;font-size:13px;color:var(--chip-ink)}
 .pf-root .term dd img{flex-shrink:0;width:18px;height:18px}
 /* Logos drawn in black would vanish on the dark chips, so they turn white there. */
-.dark .pf-root .term dd img.mono{filter:invert(1)}
+.pf-root.dark .term dd img.mono{filter:invert(1)}
 .pf-root .term-caret:after{content:"";display:inline-block;width:9px;height:1.15em;margin-left:10px;vertical-align:text-bottom;background:var(--accent);animation:pfblink 1.1s steps(1) infinite}
 @keyframes pfblink{50%{opacity:0}}
 .pf-root .section{padding:130px 0;border-bottom:1px solid var(--line)}
