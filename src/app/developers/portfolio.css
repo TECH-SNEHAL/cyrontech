@@ -1,0 +1,249 @@
+/* Portfolio styles, scoped under .pf-root so they do not affect the rest of the site. */
+/* Every colour is a variable: the light set is white and blue, the dark set (the site's `dark`
+   class on <html>) is near-black and lime green. */
+.pf-root{--bg:#ffffff;--fg:#1e3a8a;--muted:#3b5b8c;--faint:#64748b;--line:#bfdbfe;--edge:#dbeafe;--frame:#93c5fd;--dotc:#bfdbfe;--link:#cfdff5;--surface:#ffffff;--card:#f5f9ff;--soft:#eff6ff;--head:rgba(255,255,255,.92);--accent:#2563eb;--accent-2:#3b82f6;--accent-ink:#1d4ed8;--chip-ink:#1e40af;--on-accent:#ffffff;--on-accent-muted:#dbeafe;--code:#5b7299;--node-ink:#6b84ad;--glow:rgba(37,99,235,.45);--glow-frame:rgba(37,99,235,.35);--dots:.12}
+.dark .pf-root{--bg:#0a0c08;--fg:#eef2e6;--muted:#a4ad98;--faint:#7f8a73;--line:#2a3320;--edge:#232b1a;--frame:#4d7c0f;--dotc:#46562f;--link:#333f25;--surface:#141810;--card:#0f120c;--soft:#182012;--head:rgba(10,12,8,.88);--accent:#a3e635;--accent-2:#bef264;--accent-ink:#bef264;--chip-ink:#d9f99d;--on-accent:#0f1a04;--on-accent-muted:#365314;--code:#96a388;--node-ink:#8f9b80;--glow:rgba(163,230,53,.2);--glow-frame:rgba(163,230,53,.16);--dots:.07}
+.pf-root *{box-sizing:border-box}
+.pf-root{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-pf-sans),system-ui,sans-serif}
+.pf-root:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--dots);background-image:radial-gradient(var(--accent) .5px,transparent .5px);background-size:5px 5px}
+.pf-root .site{max-width:1440px;margin:auto;padding:0 42px}
+.pf-root header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--head);backdrop-filter:blur(14px);z-index:20}
+.pf-root .brand{font:500 17px var(--font-pf-mono),monospace;color:var(--fg);background:none;border:0;cursor:pointer}
+.pf-root .brand span{color:var(--muted)}
+.pf-root nav{display:flex;gap:28px}
+.pf-root button,
+.pf-root a{font:inherit}
+.pf-root nav button,
+.pf-root .socials a{color:var(--muted);background:none;border:0;text-decoration:none;cursor:pointer;font:400 14px var(--font-pf-mono),monospace}
+.pf-root nav button.on,
+.pf-root nav button:hover,
+.pf-root .socials a:hover{color:var(--fg)}
+/* The site's theme button, recoloured to this page's palette. */
+.pf-root .theme,
+.pf-root .theme:hover{border-color:var(--line);background:var(--surface);color:var(--accent)}
+.pf-root .theme:hover{border-color:var(--accent)}
+.pf-root .theme:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.pf-root .hero{min-height:720px;padding:56px 0 96px;position:relative}
+.pf-root .eyebrow{font:14px var(--font-pf-mono),monospace;color:var(--muted);display:flex;align-items:center;gap:8px}
+.pf-root .dot{width:7px;height:7px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 14px color-mix(in srgb,var(--accent-2) 40%,transparent)}
+.pf-root .hero h1{font-size:clamp(55px,8.3vw,125px);line-height:.95;letter-spacing:-.075em;max-width:1100px;font-weight:500;margin:35px 0 80px}
+.pf-root .hero h1 em,
+.pf-root .section h2 i,
+.pf-root .contact h2 i{font-family:Georgia,serif;font-weight:400;color:var(--accent)}
+.pf-root .metrics{display:flex;gap:70px;border-top:1px solid var(--line);padding-top:22px}
+.pf-root .metrics div{display:flex;gap:16px;align-items:flex-start}
+.pf-root .metrics b{font:500 30px var(--font-pf-mono),monospace}
+.pf-root .metrics span{font:13px var(--font-pf-mono),monospace;color:var(--muted);line-height:1.45}
+.pf-root .scroll{position:absolute;right:0;bottom:45px;color:var(--muted);font:13px var(--font-pf-mono),monospace;display:flex;gap:8px;align-items:center}
+/* Skills terminal: the code card frame, holding one prompt line per skill group and the
+   group's skills as its output. The last prompt is empty, with a blinking caret. */
+.pf-root .skills{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:56px 0}
+.pf-root .term{padding:26px 24px 28px;font:16px/1.6 var(--font-pf-mono),monospace;color:var(--code)}
+.pf-root .term dl{margin:0}
+.pf-root .term dt span,
+.pf-root .term-caret{color:var(--accent)}
+.pf-root .term dt b{font-weight:500;color:var(--fg)}
+.pf-root .term dd{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 26px}
+.pf-root .term dd span{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--edge);background:var(--surface);padding:7px 11px;font-size:13px;color:var(--chip-ink)}
+.pf-root .term dd img{flex-shrink:0;width:18px;height:18px}
+/* Logos drawn in black would vanish on the dark chips, so they turn white there. */
+.dark .pf-root .term dd img.mono{filter:invert(1)}
+.pf-root .term-caret:after{content:"";display:inline-block;width:9px;height:1.15em;margin-left:10px;vertical-align:text-bottom;background:var(--accent);animation:pfblink 1.1s steps(1) infinite}
+@keyframes pfblink{50%{opacity:0}}
+.pf-root .section{padding:130px 0;border-bottom:1px solid var(--line)}
+.pf-root .sectionhead{display:flex;gap:15px;color:var(--muted);font:13px var(--font-pf-mono),monospace;margin-bottom:75px;text-transform:lowercase}
+.pf-root .sectionhead{align-items:flex-end}
+.pf-root .sectionhead span{font:400 72px/0.9 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.2px var(--accent)}
+.pf-root .sectionhead b{font:400 13px var(--font-pf-mono),monospace;color:var(--muted);text-transform:lowercase;padding-bottom:6px}
+.pf-root .identity-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:90px}
+.pf-root .lead{font-size:28px;line-height:1.35;letter-spacing:-.02em}
+.pf-root .identity-grid p:not(.lead),
+.pf-root .three p{color:var(--muted);line-height:1.8;font-size:16px}
+.pf-root .codecard{align-self:start;background:var(--card);border:1px solid var(--edge);border-radius:22px;overflow:hidden;box-shadow:0 18px 40px -30px var(--glow)}
+.pf-root .codehead{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--edge);font:14px var(--font-pf-mono),monospace;color:var(--muted)}
+.pf-root .codedots{display:flex;gap:8px}
+.pf-root .codedots i{width:10px;height:10px;border-radius:50%;background:var(--dotc)}
+.pf-root .codecard pre{margin:0;padding:24px 24px 28px;font:16px/2 var(--font-pf-mono),monospace;color:var(--code);white-space:pre-wrap}
+.pf-root .code-tag{color:var(--accent)}
+.pf-root .code-name{color:var(--accent-2)}
+.pf-root .three{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;margin-top:70px;border-top:1px solid var(--line);padding-top:52px}
+.pf-root .three h4{font:500 14px var(--font-pf-mono),monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.22em;margin:0 0 18px}
+.pf-root .three p{font-size:17px;line-height:1.75;margin:0}
+.pf-root .logtitle,
+.pf-root .workintro,
+.pf-root .stackintro{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+.pf-root .section h2{font-size:clamp(42px,6vw,82px);line-height:.95;letter-spacing:-.065em;font-weight:500;margin:0}
+.pf-root .workintro p,
+.pf-root .stackintro p{max-width:410px;color:var(--muted);font-size:16px;line-height:1.7}
+.pf-root .cases{margin-top:90px}
+.pf-root .case{padding:38px 0;border-top:1px solid var(--line)}
+.pf-root .case-top{display:flex;justify-content:space-between;color:var(--faint);font:12px var(--font-pf-mono),monospace;margin-bottom:25px}
+.pf-root .case h3{font-size:36px;letter-spacing:-.04em;font-weight:500;max-width:800px;margin:0 0 45px}
+.pf-root .casegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:45px}
+.pf-root .casegrid h5{font:12px var(--font-pf-mono),monospace;color:var(--accent-ink);text-transform:uppercase;margin:0 0 12px}
+.pf-root .casegrid p{color:var(--muted);font-size:15px;line-height:1.7;margin:0}
+.pf-root .hl{color:var(--accent);font-weight:600}
+.pf-root .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:35px}
+.pf-root .tags span,
+.pf-root .chips span{border:1px solid var(--line);padding:7px 9px;color:var(--accent-ink);font:12px var(--font-pf-mono),monospace}
+.pf-root .scale{padding:90px 0;border-bottom:1px solid var(--line)}
+.pf-root .mono{font:13px var(--font-pf-mono),monospace;color:var(--muted)}
+.pf-root .scale>strong{display:block;font:500 100px var(--font-pf-mono),monospace;letter-spacing:-.08em;margin-top:25px}
+.pf-root .scale>p{max-width:540px;color:var(--muted);line-height:1.7;font-size:16px}
+.pf-root .moduletitle{font:500 16px var(--font-pf-mono),monospace;color:var(--fg)}
+.pf-root .chips{display:flex;gap:5px;flex-wrap:wrap}
+.pf-root .chips span{font-size:11px;padding:5px 7px}
+.pf-root .contact{padding-bottom:80px}
+.pf-root .availability{font:12px var(--font-pf-mono),monospace;color:var(--muted);margin-bottom:35px}
+.pf-root .contact h2{font-size:clamp(48px,7vw,100px);letter-spacing:-.07em;line-height:.93;margin:0}
+.pf-root .contactrow{display:flex;gap:12px;margin-top:55px}
+.pf-root .contactrow button,
+.pf-root .contactrow a{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--soft);color:var(--chip-ink);padding:13px 16px;text-decoration:none;font:13px var(--font-pf-mono),monospace;cursor:pointer}
+.pf-root .contactrow a{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:var(--on-accent)}
+.pf-root .socials{display:flex;gap:30px;margin-top:80px}
+.pf-root .socials a{font-size:13px}
+.pf-root footer{padding:25px 0 35px;color:var(--faint);font:12px var(--font-pf-mono),monospace}
+@media(max-width:800px){
+.pf-root .site{padding:0 20px}
+.pf-root header{height:65px}
+.pf-root nav{display:none}
+.pf-root .hero{padding-top:36px;padding-bottom:60px;min-height:650px}
+.pf-root .hero h1{font-size:53px;margin:30px 0 60px}
+.pf-root .metrics{gap:25px}
+.pf-root .metrics div{display:block}
+.pf-root .metrics b{display:block;margin-bottom:7px}
+.pf-root .identity-grid,
+.pf-root .three,
+.pf-root .casegrid{grid-template-columns:1fr;gap:35px}
+.pf-root .section{padding:90px 0}
+.pf-root .sectionhead{margin-bottom:50px}
+.pf-root .logtitle,
+.pf-root .workintro,
+.pf-root .stackintro{display:block}
+.pf-root .case h3{font-size:28px}
+.pf-root .scroll{display:none}
+.pf-root .skills{padding:40px 0}
+.pf-root .term{padding:20px 16px 22px;font-size:14px}
+.pf-root .term dd{gap:6px;margin:10px 0 22px}
+.pf-root .term dd span{gap:6px;padding:5px 8px;font-size:12px}
+.pf-root .term dd img{width:16px;height:16px}
+.pf-root .contactrow{flex-direction:column}
+.pf-root .contactrow>*{justify-content:center}
+.pf-root .socials{margin-top:50px}
+}
+
+/* Layout to match the gabrielthecode.com reference: hero phone, alternating cases, centered CTA */
+/* The portrait is as tall as the first screen allows (header 76px, 46px above, 40px below),
+   kept between 300px and 430px wide and under 30% of the window width. */
+.pf-root .hero{display:block;--pw:clamp(300px,min(calc((100vh - 162px)*2/3),30vw),430px)}
+/* The headline stops 40px short of the portrait, which sits 4% in from the right,
+   and is at least tall enough that the stats row starts below the portrait. */
+.pf-root .hero h1{max-width:min(820px,calc(96% - var(--pw) - 40px));min-height:calc(var(--pw)*1.5 - 110px)}
+.pf-root .portrait{position:absolute;right:4%;top:46px;width:var(--pw);aspect-ratio:2/3;border:2px solid var(--frame);border-radius:28px;overflow:hidden;background:var(--soft);box-shadow:0 30px 80px -30px var(--glow-frame);z-index:1}
+.pf-root .portrait img{object-fit:cover}
+.pf-root .phone{position:absolute;right:4%;top:120px;width:250px;height:500px;border:2px solid var(--frame);border-radius:38px;background:var(--surface);box-shadow:0 30px 80px -30px var(--glow-frame);padding:22px 18px;z-index:1}
+.pf-root .phone.small{position:relative;top:auto;right:auto;width:260px;height:460px}
+/* A phone holding a real app screenshot: the frame takes the screenshot's own shape. */
+.pf-root .phone.small.shot{width:285px;max-width:100%;height:auto;aspect-ratio:716/1600;padding:8px}
+.pf-root .phone-shot{position:relative;width:100%;height:100%;border-radius:29px;overflow:hidden;background:var(--soft)}
+.pf-root .phone-shot img{object-fit:cover}
+/* A wide screenshot (TV or desktop): no phone bezel, just a rounded frame in the image's own shape. */
+.pf-root .screen-shot{position:relative;width:100%;aspect-ratio:16/9;border:2px solid var(--frame);border-radius:20px;overflow:hidden;background:var(--soft);box-shadow:0 30px 80px -30px var(--glow-frame)}
+.pf-root .screen-shot img{object-fit:cover}
+.pf-root .hero .scroll{right:auto;left:0;bottom:32px}
+.pf-root .case{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.pf-root .case.flip .caseart{order:2}
+.pf-root .casegrid{grid-template-columns:1fr;gap:26px}
+.pf-root .caseart{display:flex;justify-content:center;align-items:center;gap:20px}
+/* Two screenshots side by side share the column, as two identical phones. */
+.pf-root .caseart.pair .phone.small.shot{width:min(260px,calc(50% - 10px))}
+.pf-root .scale{text-align:center}
+.pf-root .scale>strong{font:500 clamp(110px,15vw,210px)/1 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.06em;color:var(--accent);margin:25px 0 30px}
+/* The plus is outlined, like the section numbers. */
+.pf-root .scale>strong i{font-style:normal;color:transparent;-webkit-text-stroke:2px var(--accent)}
+.pf-root .scale>p{margin:0 auto}
+/* The four disciplines: a ruled row of numbered columns under the count. */
+.pf-root .disciplines{display:grid;grid-template-columns:repeat(4,1fr);margin-top:64px;border-top:1px solid var(--line);text-align:left}
+.pf-root .disciplines>div{padding:28px 28px 0;border-left:1px solid var(--line)}
+.pf-root .disciplines>div:first-child{padding-left:0;border-left:0}
+.pf-root .disciplines span{font:13px var(--font-pf-mono),monospace;color:var(--accent)}
+.pf-root .disciplines h4{font:500 22px/1.25 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.02em;margin:14px 0 8px}
+.pf-root .disciplines p{margin:0;color:var(--muted);font-size:15px;line-height:1.6}
+.pf-root .contact{text-align:center}
+.pf-root .contact h2{margin:0 auto}
+.pf-root .contactrow,.pf-root .socials{justify-content:center}
+@media(max-width:800px){.pf-root .hero h1{max-width:none;min-height:0}.pf-root .portrait{position:relative;right:auto;top:auto;width:160px;border-radius:20px;margin-bottom:28px}.pf-root .case{grid-template-columns:1fr;gap:40px}.pf-root .case.flip .caseart{order:0}.pf-root .disciplines{grid-template-columns:1fr 1fr;margin-top:44px}.pf-root .disciplines>div{padding:22px 0 22px 18px}.pf-root .disciplines>div:nth-child(odd){padding-left:0;border-left:0}.pf-root .disciplines>div:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* Stack section: compact module map. One module is selected at a time and its links animate. */
+.pf-root .modmap{margin-top:50px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:stretch}
+.pf-root .mapbox{min-width:0;background:var(--card);border:1px solid var(--edge);border-radius:22px;padding:18px 24px 24px}
+.pf-root .maphint{font:13px var(--font-pf-mono),monospace;color:var(--muted);margin-bottom:12px}
+.pf-root .mapsvg{display:block;width:100%;max-width:920px;height:auto;margin:0 auto}
+.pf-root .maplink{fill:none;stroke:var(--link);stroke-width:1.3}
+.pf-root .maplink.on{stroke:var(--accent);stroke-width:2;stroke-dasharray:6 6;animation:pfdash .7s linear infinite,pfin .3s ease both}
+.pf-root .mapmark{fill:var(--link)}
+.pf-root .mapmark.on{fill:var(--accent)}
+.pf-root .mapnode{cursor:pointer;outline:none}
+.pf-root .mapnode rect{fill:var(--surface);stroke:var(--edge);stroke-width:1.2;transition:fill .3s,stroke .3s}
+.pf-root .mapnode text{font:500 14px var(--font-pf-mono),monospace;fill:var(--node-ink);text-anchor:middle;dominant-baseline:central;pointer-events:none;transition:fill .3s}
+.pf-root .mapnode.near rect{stroke:var(--accent);stroke-width:1.6}
+.pf-root .mapnode.near text{fill:var(--fg)}
+.pf-root .mapnode.sel rect{fill:var(--accent);stroke:var(--accent)}
+.pf-root .mapnode.sel text{fill:var(--on-accent)}
+.pf-root .mapnode:focus-visible rect{stroke:var(--fg);stroke-width:2.4}
+.pf-root .mapinfo{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--edge);border-radius:22px;padding:22px;box-shadow:0 18px 40px -30px var(--glow)}
+.pf-root .mapinfo-top{display:flex;justify-content:space-between;font:12px var(--font-pf-mono),monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:22px}
+.pf-root .mapinfo-body{display:flex;flex-direction:column;flex:1;animation:pfin .35s ease both}
+.pf-root .mapinfo .moduletitle{font-size:18px;color:var(--accent)}
+.pf-root .mapinfo p{font-size:15px;color:var(--muted);line-height:1.65;margin:14px 0 18px}
+.pf-root .mapinfo .chips{margin-bottom:18px}
+.pf-root .maplinked{margin-top:auto;padding-top:16px;border-top:1px solid var(--edge)}
+.pf-root .maplinked span{display:block;font:12px var(--font-pf-mono),monospace;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.pf-root .maplinked div{display:flex;flex-wrap:wrap;gap:6px 12px}
+.pf-root .maplinked b{font:500 13px var(--font-pf-mono),monospace;color:var(--fg)}
+@keyframes pfdash{to{stroke-dashoffset:-12}}
+@keyframes pfin{from{opacity:0}}
+@media(max-width:1100px){.pf-root .modmap{grid-template-columns:minmax(0,1fr)}.pf-root .mapinfo{min-height:230px}}
+@media(max-width:760px){.pf-root .mapbox{padding:16px 0 18px 16px}.pf-root .mapscroll{overflow-x:auto;padding-right:16px}.pf-root .mapsvg{min-width:720px;margin:0}.pf-root .maphint:after{content:" · drag sideways →"}.pf-root .mapinfo{min-height:330px}}
+@media (prefers-reduced-motion:reduce){.pf-root .maplink.on,.pf-root .mapinfo-body,.pf-root .term-caret:after{animation:none}}
+
+/* Career section: a log viewer. Filter chips narrow the lines; clicking a line opens its details. */
+.pf-root .logview{margin-top:60px;border:1px solid var(--edge);border-radius:22px;background:var(--surface);overflow:hidden;box-shadow:0 18px 40px -30px var(--glow)}
+.pf-root .loghead{display:flex;align-items:center;gap:14px;padding:16px 20px;background:var(--card);border-bottom:1px solid var(--edge);font:14px var(--font-pf-mono),monospace;color:var(--muted)}
+.pf-root .logcount{margin-left:auto}
+.pf-root .logfilters{display:flex;flex-wrap:wrap;gap:10px;padding:18px 20px;border-bottom:1px solid var(--edge)}
+.pf-root .logfilters button{display:flex;align-items:center;gap:9px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--chip-ink);font:14px var(--font-pf-mono),monospace;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.pf-root .logfilters button:hover{border-color:var(--accent)}
+.pf-root .logfilters button b{font-weight:500;color:var(--muted)}
+.pf-root .logfilters button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.pf-root .logfilters button.on b{color:var(--on-accent-muted)}
+.pf-root .logitem{border-bottom:1px solid var(--edge)}
+.pf-root .logitem:last-child{border-bottom:0}
+.pf-root .logrow{display:grid;grid-template-columns:34px 118px 128px minmax(0,1fr) 22px;align-items:center;gap:16px;width:100%;padding:20px;border:0;background:none;text-align:left;color:var(--fg);cursor:pointer;transition:background .2s}
+.pf-root .logrow:hover,.pf-root .logitem.open .logrow{background:var(--card)}
+.pf-root .logrow:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.pf-root .logn,.pf-root .logwhen{font:13px var(--font-pf-mono),monospace;color:var(--muted)}
+.pf-root .logtag{justify-self:start;padding:5px 10px;border-radius:999px;font:12px var(--font-pf-mono),monospace;background:var(--soft);color:var(--accent-ink)}
+.pf-root .logtag.work{background:var(--accent);color:var(--on-accent)}
+.pf-root .logmain{display:flex;flex-direction:column;gap:4px;min-width:0}
+.pf-root .logmain strong{font:500 21px/1.25 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.02em}
+.pf-root .logmain em{font:normal 15px/1.4 var(--font-pf-sans),system-ui,sans-serif;color:var(--muted)}
+.pf-root .logchev{color:var(--accent);transition:transform .35s cubic-bezier(.22,1,.36,1)}
+.pf-root .logitem.open .logchev{transform:rotate(180deg)}
+.pf-root .logbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.22,1,.36,1)}
+.pf-root .logitem.open .logbody{grid-template-rows:1fr}
+.pf-root .logbody>div{overflow:hidden;min-height:0;padding:0 20px 0 332px}
+.pf-root .logbody ul{list-style:none;margin:0;padding:4px 0 0;max-width:760px}
+.pf-root .logbody li{position:relative;padding-left:20px;margin-bottom:10px;color:var(--muted);font-size:16px;line-height:1.65}
+.pf-root .logbody li:before{content:"";position:absolute;left:0;top:.68em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
+.pf-root .logbody .chips{margin:16px 0 0}
+.pf-root .logbody>div>:last-child{margin-bottom:24px}
+@media(max-width:900px){
+.pf-root .logrow{grid-template-columns:auto auto minmax(0,1fr) 22px;gap:8px 12px;padding:18px 16px}
+.pf-root .logn{display:none}
+.pf-root .logmain{grid-column:1 / 4;grid-row:2}
+.pf-root .logchev{grid-column:4;grid-row:1 / 3}
+.pf-root .logmain strong{font-size:19px}
+.pf-root .logbody>div{padding:0 16px}
+.pf-root .logfilters{padding:16px}
+}

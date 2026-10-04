@@ -21,11 +21,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
       images: PORTFOLIO_IMAGES,
     },
-    {
-      url: `${BASE_URL}/developers`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.7,
-    },
   ];
 }

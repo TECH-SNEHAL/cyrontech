@@ -11,7 +11,6 @@ const NAV_ITEMS = [
   { name: "Services", link: "#services" },
   { name: "Process", link: "#process" },
   { name: "Reviews", link: "#testimonials" },
-  { name: "Developers", link: "/developers" },
   { name: "Contact", link: "#contact" },
 ];
 
