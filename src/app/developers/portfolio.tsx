@@ -7,6 +7,8 @@ import { CountUp } from "@/components/count-up";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
+import { MorphingText } from "@/components/ui/morphing-text";
+import { ParticleImage } from "@/components/ui/particle-image";
 import { TextAnimate } from "@/components/ui/text-animate";
 import VaporizeTextCycle from "@/components/ui/vapour-text-effect";
 import { VIDEO_REVIEW, VIDEO_REVIEW_HEADER } from "@/lib/video-review";
@@ -465,6 +467,8 @@ const disciplines: [string, string][] = [
   ["AI experiments", "Retrieval, embeddings and LLM-backed prototypes."],
   ["Web experiences", "Booking, reservation and program websites."],
 ];
+// The last word of the hero headline, which melts from one of these to the next.
+const headlineWords = ["products.", "applications.", "solutions."];
 // The names on their own, for the line under the count that shows them one at a time.
 const disciplineNames = disciplines.map(([name]) => name);
 
@@ -492,6 +496,7 @@ export default function Portfolio() {
   // The page keeps its own theme. It opens light on every visit, whatever the main site is set to.
   const [dark, setDark] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
+  const portraitRef = useRef<HTMLImageElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const picked = useRef(false);
 
@@ -595,21 +600,27 @@ export default function Portfolio() {
               </button>
             ))}
           </nav>
-          <button
-            type="button"
-            className="theme"
-            aria-label="Toggle dark mode"
-            aria-pressed={dark}
-            onClick={() => setDark((d) => !d)}
-          >
-            {dark ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}
-          </button>
+          <div className="headend">
+            <span className="status">
+              <span className="dot"></span>open_to_remote ↗
+            </span>
+            <button
+              type="button"
+              className="theme"
+              aria-label="Toggle dark mode"
+              aria-pressed={dark}
+              onClick={() => setDark((d) => !d)}
+            >
+              {dark ? <Sun size={16} strokeWidth={1.75} /> : <Moon size={16} strokeWidth={1.75} />}
+            </button>
+          </div>
         </header>
 
         <main id="top">
           <section className="hero">
             <div className="portrait">
               <Image
+                ref={portraitRef}
                 src="/team/vijay-snehal-blue-polo.png"
                 alt="Vijay Snehal"
                 fill
@@ -619,9 +630,9 @@ export default function Portfolio() {
                 loading="eager"
                 fetchPriority="high"
               />
-            </div>
-            <div className="eyebrow">
-              <span className="dot"></span>open_to_remote ↗
+              {/* The photo stays a sharp image. Near the pointer it breaks into dots that scatter
+                  and drift back, like the name beside it. */}
+              <ParticleImage imageRef={portraitRef} holeColor="--soft" particleDensity={3} />
             </div>
             {/* The name in dots that scatter away from the pointer. Its colours are read from the
                 theme once, so it is rebuilt when the theme changes. */}
@@ -644,8 +655,10 @@ export default function Portfolio() {
                   // italic letters lean past their box: the padding, repeated on every line, keeps them from being cut off
                   className="box-decoration-clone pr-[0.14em]"
                 >
-                  useful products.
-                </AnimatedGradientText>
+                  useful
+                </AnimatedGradientText>{" "}
+                {/* in the headline's own font and colour, and as wide as the widest word */}
+                <MorphingText inline texts={headlineWords} cooldownTime={2.2} />
               </em>
             </h1>
             <div className="metrics">
