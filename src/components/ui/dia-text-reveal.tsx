@@ -122,6 +122,16 @@ export interface DiaTextRevealProps extends Omit<
    * @defaultValue `false`
    */
   fixedWidth?: boolean
+  /**
+   * What to render in place of `text`, when the same words need markup of their own
+   * (a part that must wrap as one piece, say). The sweep crosses it just the same.
+   */
+  children?: React.ReactNode
+  /**
+   * Called once the sweep has crossed the text and it has settled on `textColor`.
+   * Not called when the sweep repeats, or for visitors who ask for reduced motion.
+   */
+  onSwept?: () => void
 }
 
 export function DiaTextReveal({
@@ -136,6 +146,8 @@ export function DiaTextReveal({
   once = true,
   className,
   fixedWidth = false,
+  children,
+  onSwept,
   ...props
 }: DiaTextRevealProps) {
   const texts = Array.isArray(text) ? text : [text]
@@ -151,6 +163,7 @@ export function DiaTextReveal({
     repeat,
     repeatDelay,
     texts,
+    onSwept,
   })
   // The latest props are stored after each render (not during it), so a sweep
   // that is already running picks them up.
@@ -163,6 +176,7 @@ export function DiaTextReveal({
       repeat,
       repeatDelay,
       texts,
+      onSwept,
     }
   })
 
@@ -200,7 +214,10 @@ export function DiaTextReveal({
         delay,
         ease: sweepEase,
         onComplete() {
-          if (!repeat) return
+          if (!repeat) {
+            optsRef.current.onSwept?.()
+            return
+          }
           timerRef.current = setTimeout(() => {
             const next = (indexRef.current + 1) % texts.length
             indexRef.current = next
@@ -263,7 +280,7 @@ export function DiaTextReveal({
       transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
       {...props}
     >
-      {texts[activeIndex]}
+      {children ?? texts[activeIndex]}
     </motion.span>
   )
 }

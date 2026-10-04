@@ -8,7 +8,10 @@
 html:has(.pf-root){color-scheme:light!important}
 html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root *{box-sizing:border-box}
-.pf-root{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-pf-sans),system-ui,sans-serif}
+/* Nothing may make the page scroll sideways: what runs past its edge is cut off there. (The
+   contact heading's question box holds unseen words wider than the one on show.) `clip`,
+   unlike `hidden`, leaves the sticky header working. */
+.pf-root{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-pf-sans),system-ui,sans-serif;overflow-x:clip}
 .pf-root:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:var(--dots);background-image:radial-gradient(var(--accent) .5px,transparent .5px);background-size:5px 5px}
 .pf-root .site{max-width:1440px;margin:auto;padding:0 42px}
 .pf-root header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--head);backdrop-filter:blur(14px);z-index:20}
@@ -58,7 +61,8 @@ html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root .sectionhead{display:flex;gap:15px;color:var(--muted);font:13px var(--font-pf-mono),monospace;margin-bottom:75px;text-transform:lowercase}
 .pf-root .sectionhead{align-items:flex-end}
 .pf-root .sectionhead span{font:400 72px/0.9 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.2px var(--accent)}
-.pf-root .sectionhead b{font:400 13px var(--font-pf-mono),monospace;color:var(--muted);text-transform:lowercase;padding-bottom:6px}
+/* The name may break inside a word: on a phone "experience" is wider than the row. */
+.pf-root .sectionhead b{font:400 13px var(--font-pf-mono),monospace;color:var(--muted);text-transform:lowercase;padding-bottom:6px;overflow-wrap:anywhere}
 .pf-root .identity-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:90px}
 .pf-root .lead{font-size:28px;line-height:1.35;letter-spacing:-.02em}
 .pf-root .identity-grid p:not(.lead),
@@ -138,11 +142,14 @@ html:has(.pf-root.dark){color-scheme:dark!important}
 
 /* Layout to match the gabrielthecode.com reference: hero phone, alternating cases, centered CTA */
 /* The portrait is as tall as the first screen allows (header 76px, 46px above, 40px below),
-   kept between 300px and 430px wide and under 30% of the window width. */
-.pf-root .hero{display:block;--pw:clamp(300px,min(calc((100vh - 162px)*2/3),30vw),430px)}
+   kept between 300px and 430px wide and under 30% of the window width.
+   --nh is the height of the name above the headline. The name is as wide as the headline's
+   column (the hero is the window width, at most 1440px, less 42px each side) and 7.4 times
+   as wide as it is tall. */
+.pf-root .hero{display:block;--pw:clamp(300px,min(calc((100vh - 162px)*2/3),30vw),430px);--nh:calc(min(820px,(min(100vw,1440px) - 84px)*.96 - var(--pw) - 40px)/7.4)}
 /* The headline stops 40px short of the portrait, which sits 4% in from the right,
    and is at least tall enough that the stats row starts below the portrait. */
-.pf-root .hero h1{max-width:min(820px,calc(96% - var(--pw) - 40px));min-height:calc(var(--pw)*1.5 - 160px)}
+.pf-root .hero h1{max-width:min(820px,calc(96% - var(--pw) - 40px));min-height:calc(var(--pw)*1.5 - 89px - var(--nh)*.81)}
 .pf-root .portrait{position:absolute;right:4%;top:46px;width:var(--pw);aspect-ratio:2/3;border:2px solid var(--frame);border-radius:28px;overflow:hidden;background:var(--soft);box-shadow:0 30px 80px -30px var(--glow-frame);z-index:1}
 .pf-root .portrait img{object-fit:cover}
 .pf-root .phone{position:absolute;right:4%;top:120px;width:250px;height:500px;border:2px solid var(--frame);border-radius:38px;background:var(--surface);box-shadow:0 30px 80px -30px var(--glow-frame);padding:22px 18px;z-index:1}
@@ -262,11 +269,11 @@ html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root .reviewcard p{margin:0;font-size:15px;line-height:1.6}
 .pf-root .reviewcard video{display:block;width:100%;height:auto;border:1px solid var(--edge);border-radius:16px;background:var(--soft);object-fit:cover}
 
-/* Hero name in dots, the first thing in the hero: as wide as the headline allows, clear of the
-   portrait. The canvas keeps empty room above and below the letters for the dots to scatter
-   into, so it is pulled up by that much to start level with the hero's top padding. */
-.pf-root .nameparticles{width:100%;max-width:min(560px,calc(96% - var(--pw) - 40px));aspect-ratio:6/1;margin:-12px 0 -10px}
-@media(max-width:800px){.pf-root .nameparticles{max-width:none}}
+/* Hero name in dots, the first thing in the hero: as wide as the headline's column, clear
+   of the portrait (see --nh above). The canvas is a little taller than the letters, so it is
+   pulled up, and the headline pulled in, by about that much. */
+.pf-root .nameparticles{width:100%;max-width:min(820px,calc(96% - var(--pw) - 40px));aspect-ratio:7.4/1;margin:calc(var(--nh)*-.11) 0 calc(var(--nh)*-.08)}
+@media(max-width:800px){.pf-root .nameparticles{max-width:none;margin:0}}
 /* The discipline that cycles under the product count. The text is drawn in this box's own
    font and colour. */
 .pf-root .disciplinecycle{height:60px;max-width:620px;margin:0 auto 14px;font:500 36px var(--font-pf-sans),system-ui,sans-serif;color:var(--accent)}

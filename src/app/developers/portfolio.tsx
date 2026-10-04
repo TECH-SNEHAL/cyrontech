@@ -1,4 +1,4 @@
-   "use client";
+"use client";
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -6,11 +6,13 @@ import { ArrowUpRight, Check, ChevronDown, Copy, Moon, Sun } from "lucide-react"
 import { CountUp } from "@/components/count-up";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
+import { DustText } from "@/components/ui/dust-text";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { MorphingText } from "@/components/ui/morphing-text";
 import { ParticleImage } from "@/components/ui/particle-image";
 import { TextAnimate } from "@/components/ui/text-animate";
 import VaporizeTextCycle from "@/components/ui/vapour-text-effect";
+import { usePauseOffscreen } from "@/lib/use-pause-offscreen";
 import { VIDEO_REVIEW, VIDEO_REVIEW_HEADER } from "@/lib/video-review";
 import "./portfolio.css";
 
@@ -469,6 +471,13 @@ const disciplines: [string, string][] = [
 ];
 // The last word of the hero headline, which melts from one of these to the next.
 const headlineWords = ["products.", "applications.", "solutions."];
+// How thick the dust is that "ideas", "apps" and the section headers form out of: 1 is the
+// light dust of the contact line, each step up adds as much again.
+const HEADLINE_DUST = 3;
+// The contact heading asks "Have …?" and the rest melts from one of these to the next. Each
+// carries its own article, so every question reads correctly. The first is the widest, which
+// keeps the line the same width before and after the morphing starts.
+const contactPhrases = ["an average app?", "an idea?", "a requirement?"];
 // The names on their own, for the line under the count that shows them one at a time.
 const disciplineNames = disciplines.map(([name]) => name);
 
@@ -496,9 +505,15 @@ export default function Portfolio() {
   // The page keeps its own theme. It opens light on every visit, whatever the main site is set to.
   const [dark, setDark] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
+  const caretRef = useRef<HTMLDivElement>(null);
   const portraitRef = useRef<HTMLImageElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const picked = useRef(false);
+
+  // The map's marching dashes and the terminal's blinking caret are repainted by the browser
+  // on every frame, so each runs only while it is on screen.
+  usePauseOffscreen(mapRef);
+  usePauseOffscreen(caretRef);
 
   useEffect(() => {
     const el = mapRef.current;
@@ -641,13 +656,17 @@ export default function Portfolio() {
               text="VIJAY SNEHAL"
               colors={["--accent", "--accent-2"]}
               align="left"
-              particleDensity={2}
+              particleDensity={3}
+              textHeight={1}
               className="nameparticles"
             />
             <h1>
-              <TextAnimate as="span" animation="blurIn" by="word" once accessible={false}>
-                I turn ideas and ordinary apps into
-              </TextAnimate>{" "}
+              <BlurIn>I turn</BlurIn>{" "}
+              {/* "ideas" and "apps" gather out of a heavy cloud of dust, one after the other */}
+              <DustText text="ideas" speed={1.4} delay={0.2} density={HEADLINE_DUST} />{" "}
+              <BlurIn delay={0.1}>and ordinary</BlurIn>{" "}
+              <DustText text="apps" speed={1.4} delay={0.6} density={HEADLINE_DUST} />{" "}
+              <BlurIn delay={0.2}>into</BlurIn>{" "}
               <em>
                 <AnimatedGradientText
                   colorFrom="var(--accent)"
@@ -658,7 +677,7 @@ export default function Portfolio() {
                   useful
                 </AnimatedGradientText>{" "}
                 {/* in the headline's own font and colour, and as wide as the widest word */}
-                <MorphingText inline texts={headlineWords} cooldownTime={2.2} />
+                <MorphingText inline texts={headlineWords} morphTime={0.9} cooldownTime={1.2} />
               </em>
             </h1>
             <div className="metrics">
@@ -731,7 +750,7 @@ export default function Portfolio() {
                     </div>
                   ))}
                 </dl>
-                <div className="term-caret" aria-hidden="true">
+                <div className="term-caret" aria-hidden="true" ref={caretRef} data-anim="paused">
                   &gt;&gt;
                 </div>
               </div>
@@ -1071,7 +1090,7 @@ becomes something people can use.
               </p>
             </div>
             <div className="modmap">
-              <div className="mapbox" ref={mapRef}>
+              <div className="mapbox" ref={mapRef} data-anim="paused">
                 <div className="maphint">
                   {"// hover or tap a module to trace its links"}
                 </div>
@@ -1208,17 +1227,11 @@ becomes something people can use.
               remote · UTC+5:30 · flexible overlap
             </div>
             <h2>
-              {/* a band of the accent colours sweeps across, then the line settles on the text colour */}
-              <DiaTextReveal
-                text="Have an average app?"
-                textColor="var(--fg)"
-                colors={["var(--accent)", "var(--accent-2)", "var(--frame)", "var(--accent)"]}
-                duration={2.4}
-                delay={0.35}
-              />
+              <ContactLead />
               <br />
               <i>
-                <SlideUp delay={0.6}>{"Let's make it useful."}</SlideUp>
+                {/* scattered dust gathers to form the line, once, when it scrolls into view */}
+                <DustText text="Let's make it useful." />
               </i>
             </h2>
             <div className="contactrow">
@@ -1252,16 +1265,67 @@ becomes something people can use.
   );
 }
 
+// A section's header: its number, then its name, each gathering out of dust as the header
+// scrolls into view.
 function SectionHead({ num, title }: { num: string; title: string }) {
   return (
     <div className="sectionhead">
-      <span>{num}</span>
+      <DustText text={num} speed={1.4} density={HEADLINE_DUST} />
       <b>
-        <TextAnimate as="span" animation="slideLeft" by="character" once>
-          {title}
-        </TextAnimate>
+        <DustText text={title} speed={1.4} delay={0.25} density={HEADLINE_DUST} />
       </b>
     </div>
+  );
+}
+
+// The first line of the contact heading. A band of the accent colours sweeps across
+// "Have an average app?" and the line settles on the text colour; after that the question
+// itself melts from one to the next: an average app, an idea, a requirement.
+// The question is one box in both states (it wraps as a piece, and is as wide as the widest
+// question), so nothing moves when the morphing takes over from the sweep.
+function ContactLead() {
+  const [swept, setSwept] = useState(false);
+
+  if (swept) {
+    return (
+      <span className="align-bottom leading-[100%]">
+        Have{" "}
+        <MorphingText
+          inline
+          // the heading is centred: the line closes up around a shorter question
+          fit
+          texts={contactPhrases}
+          morphTime={0.9}
+          cooldownTime={1.6}
+          className={QUESTION_WRAP}
+        />
+      </span>
+    );
+  }
+  return (
+    <DiaTextReveal
+      text={`Have ${contactPhrases[0]}`}
+      textColor="var(--fg)"
+      colors={["var(--accent)", "var(--accent-2)", "var(--frame)", "var(--accent)"]}
+      duration={2.4}
+      delay={0.35}
+      onSwept={() => setSwept(true)}
+    >
+      Have <span className={`inline-grid whitespace-nowrap ${QUESTION_WRAP}`}>{contactPhrases[0]}</span>
+    </DiaTextReveal>
+  );
+}
+
+// The question stays on one line. Only a screen under 350px wide is too narrow for the
+// longest one; there it may wrap, so the page never scrolls sideways.
+const QUESTION_WRAP = "max-[349px]:whitespace-normal";
+
+// Part of the hero headline: its words sharpen out of a blur, once.
+function BlurIn({ children, delay }: { children: string; delay?: number }) {
+  return (
+    <TextAnimate as="span" animation="blurIn" by="word" once accessible={false} delay={delay}>
+      {children}
+    </TextAnimate>
   );
 }
 
