@@ -1,3 +1,5 @@
+import { KineticText } from "@/components/ui/kinetic-text";
+
 const LINKS = {
   Company: [
     { name: "Work", href: "#work" },
@@ -46,6 +48,17 @@ export function Footer() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* oversized wordmark — letters swell under the cursor; the brand name is
+          already read out above, so this one is decorative */}
+      <div className="mx-auto mt-14 max-w-7xl overflow-x-clip">
+        <KineticText
+          as="p"
+          aria-hidden="true"
+          text="Cyrontech"
+          className="select-none flex-nowrap justify-center text-[clamp(3rem,15vw,14rem)] leading-none tracking-tight text-foreground"
+        />
       </div>
 
       <div className="mx-auto mt-12 max-w-7xl border-t border-border pt-6 text-xs text-foreground/30">
