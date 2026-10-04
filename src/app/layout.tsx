@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SmoothCursor } from "@/components/ui/smooth-cursor";
 
 const SITE_URL = "https://cyrontech.in";
 
@@ -147,6 +148,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           disableTransitionOnChange
         >
           {children}
+          <SmoothCursor />
         </ThemeProvider>
       </body>
     </html>

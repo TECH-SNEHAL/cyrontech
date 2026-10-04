@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { SpotlightCard } from "@/components/spotlight-card";
+import { TextAnimate } from "@/components/ui/text-animate";
 
 const SERVICES = [
   {
@@ -57,12 +58,25 @@ export function Services() {
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
         >
-          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+          <TextAnimate
+            as="span"
+            animation="slideLeft"
+            by="character"
+            once
+            className="text-xs font-semibold uppercase tracking-widest text-primary"
+          >
             What we do
-          </span>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          </TextAnimate>
+          <TextAnimate
+            as="h2"
+            animation="slideUp"
+            by="word"
+            once
+            accessible={false}
+            className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+          >
             Everything you need to ship
-          </h2>
+          </TextAnimate>
           <p className="mt-4 text-base leading-relaxed text-foreground/60">
             End-to-end digital services — strategy, design, engineering, and
             growth — under one roof.

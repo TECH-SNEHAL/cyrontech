@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ArrowUpRight, Check, ChevronDown, Copy, Moon, Sun } from "lucide-react";
 import { CountUp } from "@/components/count-up";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
+import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
+import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
+import { TextAnimate } from "@/components/ui/text-animate";
+import VaporizeTextCycle from "@/components/ui/vapour-text-effect";
+import { VIDEO_REVIEW, VIDEO_REVIEW_HEADER } from "@/lib/video-review";
 import "./portfolio.css";
 
 type LogTag = "work" | "education" | "leadership";
@@ -459,6 +465,8 @@ const disciplines: [string, string][] = [
   ["AI experiments", "Retrieval, embeddings and LLM-backed prototypes."],
   ["Web experiences", "Booking, reservation and program websites."],
 ];
+// The names on their own, for the line under the count that shows them one at a time.
+const disciplineNames = disciplines.map(([name]) => name);
 
 // Logos drawn in black: the dark theme turns these white so they stay visible.
 const monoLogos = new Set(["apple", "github", "express", "linux", "nextjs", "json"]);
@@ -615,8 +623,30 @@ export default function Portfolio() {
             <div className="eyebrow">
               <span className="dot"></span>open_to_remote ↗
             </div>
+            {/* The name in dots that scatter away from the pointer. Its colours are read from the
+                theme once, so it is rebuilt when the theme changes. */}
+            <ParticleTextEffect
+              key={dark ? "dark" : "light"}
+              text="VIJAY SNEHAL"
+              colors={["--accent", "--accent-2"]}
+              align="left"
+              particleDensity={2}
+              className="nameparticles"
+            />
             <h1>
-              I turn ideas and ordinary apps into <em>useful products.</em>
+              <TextAnimate as="span" animation="blurIn" by="word" once accessible={false}>
+                I turn ideas and ordinary apps into
+              </TextAnimate>{" "}
+              <em>
+                <AnimatedGradientText
+                  colorFrom="var(--accent)"
+                  colorTo="var(--accent-2)"
+                  // italic letters lean past their box: the padding, repeated on every line, keeps them from being cut off
+                  className="box-decoration-clone pr-[0.14em]"
+                >
+                  useful products.
+                </AnimatedGradientText>
+              </em>
             </h1>
             <div className="metrics">
               <div>
@@ -762,9 +792,11 @@ becomes something people can use.
             <SectionHead num="02" title="experience" />
             <div className="logtitle">
               <h2>
-                Career, as a
+                <SlideUp>Career, as a</SlideUp>
                 <br />
-                <i>Logcat stream.</i>
+                <i>
+                  <SlideUp delay={0.15}>Logcat stream.</SlideUp>
+                </i>
               </h2>
             </div>
             <div className="logview">
@@ -853,9 +885,11 @@ becomes something people can use.
             <SectionHead num="03" title="selected work" />
             <div className="workintro">
               <h2>
-                Case studies,
+                <SlideUp>Case studies,</SlideUp>
                 <br />
-                <i>not screenshots.</i>
+                <i>
+                  <SlideUp delay={0.15}>not screenshots.</SlideUp>
+                </i>
               </h2>
               <p>
                 Projects are where the stack becomes useful: a requirement, a
@@ -933,6 +967,49 @@ becomes something people can use.
                   </div>
                 </article>
               ))}
+              {/* The client's video review, as one more case: a tweet-style card where the
+                  screenshots go. It is a file of ours, not a post on X, so it carries no X logo. */}
+              <article className="case">
+                <div className="caseart">
+                  <figure className="reviewcard">
+                    <figcaption>
+                      <Image src={VIDEO_REVIEW.avatar} alt="" width={48} height={48} />
+                      <div>
+                        <b>{VIDEO_REVIEW_HEADER[0]}</b>
+                        <span>{VIDEO_REVIEW_HEADER[1]}</span>
+                      </div>
+                    </figcaption>
+                    <p>{VIDEO_REVIEW.background}</p>
+                    <video
+                      controls
+                      playsInline
+                      preload="none"
+                      poster={VIDEO_REVIEW.poster}
+                      width={VIDEO_REVIEW.width}
+                      height={VIDEO_REVIEW.height}
+                      aria-label={`Video review from the ${VIDEO_REVIEW.role} of ${VIDEO_REVIEW.org}`}
+                      style={{ aspectRatio: `${VIDEO_REVIEW.width} / ${VIDEO_REVIEW.height}` }}
+                    >
+                      <source src={VIDEO_REVIEW.video} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  </figure>
+                </div>
+                <div className="casetext">
+                  <div className="case-top">
+                    <span>Client review</span>
+                    <span>Synthesis Trust · 2026</span>
+                  </div>
+                  <h3>Straight from the client.</h3>
+                  <div className="casegrid">
+                    <Block title="The review">A one-minute video from the trust&apos;s founder.</Block>
+                    <Block title="The work">
+                      The project system and the admin app built for Synthesis Trust: the first
+                      and third case studies above.
+                    </Block>
+                  </div>
+                </div>
+              </article>
             </div>
           </section>
 
@@ -942,6 +1019,14 @@ becomes something people can use.
               <CountUp target={10} duration={1.2} />
               <i>+</i>
             </strong>
+            {/* The four disciplines, one at a time: each turns to dust before the next fades in.
+                Its colour is read from the theme once, so it is rebuilt when the theme changes. */}
+            <VaporizeTextCycle
+              key={dark ? "dark" : "light"}
+              texts={disciplineNames}
+              animation={{ vaporizeDuration: 2, fadeInDuration: 1, waitDuration: 1.5 }}
+              className="disciplinecycle"
+            />
             <p>
               products and experiments across the disciplines I build. Not a vanity metric:
               every project is a chance to make the next one faster.
@@ -961,9 +1046,11 @@ becomes something people can use.
             <SectionHead num="04" title="stack" />
             <div className="stackintro">
               <h2>
-                Building for
+                <SlideUp>Building for</SlideUp>
                 <br />
-                <i>the long run.</i>
+                <i>
+                  <SlideUp delay={0.15}>the long run.</SlideUp>
+                </i>
               </h2>
               <p>
                 Structure is a feature. It is what keeps a product fast to
@@ -1108,9 +1195,18 @@ becomes something people can use.
               remote · UTC+5:30 · flexible overlap
             </div>
             <h2>
-              Have an average app?
+              {/* a band of the accent colours sweeps across, then the line settles on the text colour */}
+              <DiaTextReveal
+                text="Have an average app?"
+                textColor="var(--fg)"
+                colors={["var(--accent)", "var(--accent-2)", "var(--frame)", "var(--accent)"]}
+                duration={2.4}
+                delay={0.35}
+              />
               <br />
-              <i>Let&apos;s make it useful.</i>
+              <i>
+                <SlideUp delay={0.6}>{"Let's make it useful."}</SlideUp>
+              </i>
             </h2>
             <div className="contactrow">
               <button onClick={copy}>
@@ -1147,8 +1243,21 @@ function SectionHead({ num, title }: { num: string; title: string }) {
   return (
     <div className="sectionhead">
       <span>{num}</span>
-      <b>{title}</b>
+      <b>
+        <TextAnimate as="span" animation="slideLeft" by="character" once>
+          {title}
+        </TextAnimate>
+      </b>
     </div>
+  );
+}
+
+// One line of a heading: its words slide up into place, once, as it scrolls into view.
+function SlideUp({ children, delay }: { children: string; delay?: number }) {
+  return (
+    <TextAnimate as="span" animation="slideUp" by="word" once accessible={false} delay={delay}>
+      {children}
+    </TextAnimate>
   );
 }
 

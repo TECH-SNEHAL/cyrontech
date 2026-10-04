@@ -4,7 +4,10 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { WhatWeMake } from "@/components/what-we-make";
+import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
+import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { SpiderCursor } from "@/components/ui/spider-cursor";
+import { TextAnimate } from "@/components/ui/text-animate";
 
 const EXPERTISE = ["Web", "Mobile", "Cloud", "UI/UX", "CRM", "Automation"];
 
@@ -48,11 +51,20 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
         >
+          {/* the brand name in dots that scatter away from the pointer */}
+          <ParticleTextEffect
+            text="CYRONTECH"
+            align="left"
+            particleDensity={2}
+            className="mb-3 aspect-[5/1] w-full max-w-lg"
+          />
           <h1 className="text-balance text-5xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-6xl">
-            Software built around{" "}
-            <span className="bg-gradient-to-r from-primary to-brand-blue bg-clip-text text-transparent">
+            <TextAnimate as="span" animation="blurIn" by="word" once accessible={false}>
+              Software built around
+            </TextAnimate>{" "}
+            <AnimatedGradientText colorFrom="var(--primary)" colorTo="var(--brand-blue)">
               your business, not ours
-            </span>
+            </AnimatedGradientText>
           </h1>
 
           <p className="mt-6 max-w-lg text-balance text-base leading-relaxed text-foreground/60 sm:text-lg">

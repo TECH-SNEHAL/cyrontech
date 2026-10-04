@@ -3,6 +3,8 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import { Check, Mail, Send } from "lucide-react";
+import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
+import { TextAnimate } from "@/components/ui/text-animate";
 
 const SERVICES = ["Website", "App", "CRM", "Automation", "Desktop Application", "Other"];
 
@@ -58,11 +60,24 @@ export function CTA() {
             className="pointer-events-none absolute -left-16 -top-16 size-56 rounded-full opacity-25 blur-3xl"
             style={{ background: "var(--primary)" }}
           />
-          <span className="relative text-xs font-semibold uppercase tracking-widest text-primary">
+          <TextAnimate
+            as="span"
+            animation="slideLeft"
+            by="character"
+            once
+            className="relative text-xs font-semibold uppercase tracking-widest text-primary"
+          >
             Get in touch
-          </span>
+          </TextAnimate>
           <h2 className="relative mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
-            Let&apos;s build something great together
+            {/* a band of brand colour sweeps across, then the line settles on the panel's text colour */}
+            <DiaTextReveal
+              text="Let's build something great together"
+              textColor="var(--background)"
+              colors={["var(--primary)", "var(--brand-blue)", "#67e8f9", "var(--primary)"]}
+              duration={2.4}
+              delay={0.35}
+            />
           </h2>
           <p className="relative mt-4 text-sm leading-relaxed text-background/60">
             Tell us about your project and we&apos;ll get back to you within

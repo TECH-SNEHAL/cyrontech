@@ -249,3 +249,22 @@ html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root .logbody>div{padding:0 16px}
 .pf-root .logfilters{padding:16px}
 }
+
+/* Client video review: one more case, with a tweet-style card (who it is from, a line about
+   them, then the clip) where the screenshots go. */
+.pf-root .reviewcard{display:flex;flex-direction:column;gap:16px;width:330px;max-width:100%;margin:0;padding:20px;border:2px solid var(--frame);border-radius:28px;background:var(--surface);box-shadow:0 30px 80px -30px var(--glow-frame)}
+.pf-root .reviewcard figcaption{display:flex;align-items:center;gap:12px}
+.pf-root .reviewcard figcaption img{flex-shrink:0;width:48px;height:48px;border:1px solid var(--edge);border-radius:50%;object-fit:cover}
+.pf-root .reviewcard b{display:block;font:500 17px/1.25 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.01em}
+.pf-root .reviewcard span{display:block;margin-top:3px;font:13px var(--font-pf-mono),monospace;color:var(--muted)}
+.pf-root .reviewcard p{margin:0;font-size:15px;line-height:1.6}
+.pf-root .reviewcard video{display:block;width:100%;height:auto;border:1px solid var(--edge);border-radius:16px;background:var(--soft);object-fit:cover}
+
+/* Hero name in dots: as wide as the headline allows, clear of the portrait. The canvas keeps
+   empty room above and below the letters for the dots to scatter into. */
+.pf-root .nameparticles{width:100%;max-width:min(560px,calc(96% - var(--pw) - 40px));aspect-ratio:6/1;margin:24px 0 -10px}
+@media(max-width:800px){.pf-root .nameparticles{max-width:none}}
+/* The discipline that cycles under the product count. The text is drawn in this box's own
+   font and colour. */
+.pf-root .disciplinecycle{height:60px;max-width:620px;margin:0 auto 14px;font:500 36px var(--font-pf-sans),system-ui,sans-serif;color:var(--accent)}
+@media(max-width:800px){.pf-root .disciplinecycle{height:48px;font-size:28px}}

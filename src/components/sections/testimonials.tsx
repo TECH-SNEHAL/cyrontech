@@ -1,8 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
+import { TextAnimate } from "@/components/ui/text-animate";
+import { VIDEO_REVIEW, VIDEO_REVIEW_HEADER } from "@/lib/video-review";
 
 // Reviews from real projects we've shipped — see PROJECTS in portfolio.tsx.
 const REVIEWS = [
@@ -48,12 +52,60 @@ function ReviewCard({ review }: { review: (typeof REVIEWS)[number] }) {
   );
 }
 
+// The video review, laid out like a tweet card: who it is from, a line about
+// them, then the clip. It is a file of ours rather than a post on X, so there
+// is no X logo or link.
+function VideoReviewCard({ className = "" }: { className?: string }) {
+  const [who, from] = VIDEO_REVIEW_HEADER;
+
+  return (
+    <figure
+      className={`w-full min-w-0 max-w-[19rem] flex-col gap-4 rounded-xl border border-border bg-card p-5 ${className}`}
+    >
+      <figcaption className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Image
+            src={VIDEO_REVIEW.avatar}
+            alt=""
+            width={48}
+            height={48}
+            className="size-12 shrink-0 rounded-full border border-border/50 object-cover"
+          />
+          <div className="flex flex-col gap-0.5">
+            <span className="font-medium leading-tight text-foreground">{who}</span>
+            <span className="text-sm text-muted-foreground">{from}</span>
+          </div>
+        </div>
+        <Quote aria-hidden className="size-5 shrink-0 text-muted-foreground" />
+      </figcaption>
+
+      <p className="text-[15px] leading-relaxed text-foreground">
+        {VIDEO_REVIEW.background}
+      </p>
+
+      <video
+        controls
+        playsInline
+        preload="none"
+        poster={VIDEO_REVIEW.poster}
+        width={VIDEO_REVIEW.width}
+        height={VIDEO_REVIEW.height}
+        aria-label={`Video review from the ${VIDEO_REVIEW.role} of ${VIDEO_REVIEW.org}`}
+        className="h-auto w-full rounded-xl border border-border bg-muted object-cover shadow-sm"
+        style={{ aspectRatio: `${VIDEO_REVIEW.width} / ${VIDEO_REVIEW.height}` }}
+      >
+        <source src={VIDEO_REVIEW.video} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </figure>
+  );
+}
+
 export function Testimonials() {
-  // three taller columns beat four short ones: each copy is already longer than
-  // the track, so fewer duplicates are needed to loop without a visible gap
-  const col1 = REVIEWS.slice(0, 3);
-  const col2 = REVIEWS.slice(3, 6);
-  const col3 = REVIEWS.slice(6, 8);
+  // two tall columns: each copy is already longer than the track, so two
+  // copies are enough to loop without a visible gap
+  const col1 = REVIEWS.slice(0, 4);
+  const col2 = REVIEWS.slice(4, 8);
 
   return (
     <section id="testimonials" className="relative z-10 border-t border-border px-6 py-24 md:px-12">
@@ -65,16 +117,28 @@ export function Testimonials() {
         className="mx-auto mb-14 max-w-2xl text-center"
       >
         <span className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-foreground/5 px-3 py-1 text-xs font-medium text-foreground/70">
-          Client reviews
+          <TextAnimate as="span" animation="slideLeft" by="character" once>
+            Client reviews
+          </TextAnimate>
         </span>
-        <h2 className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-          Don&apos;t just take our word for it
-        </h2>
+        <TextAnimate
+          as="h2"
+          animation="slideUp"
+          by="word"
+          once
+          accessible={false}
+          className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+        >
+          {"Don't just take our word for it"}
+        </TextAnimate>
         <p className="mt-4 text-base leading-relaxed text-foreground/50">
           See what our clients say about working with us, and what it&apos;s like
           to have Cyron Tech build for you.
         </p>
       </motion.div>
+
+      {/* phones and tablets: the video review sits above the wall */}
+      <VideoReviewCard className="mx-auto mb-10 flex lg:hidden" />
 
       {/* mobile: single horizontal row */}
       <div className="relative mx-auto max-w-[100rem] overflow-hidden sm:hidden">
@@ -87,20 +151,17 @@ export function Testimonials() {
         <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-background" />
       </div>
 
-      {/* desktop: 4 vertical columns */}
-      <div className="relative mx-auto hidden h-[34rem] max-w-7xl gap-4 overflow-hidden sm:grid sm:grid-cols-2 lg:grid-cols-3">
-        <Marquee vertical pauseOnHover repeat={2} className="h-full [--duration:36s]">
+      {/* sm and up: two vertical columns; from lg the video review stands between them */}
+      <div className="relative mx-auto hidden h-[34rem] max-w-7xl gap-4 overflow-hidden sm:grid sm:grid-cols-2 lg:flex lg:h-[42rem] lg:justify-center">
+        <Marquee vertical pauseOnHover repeat={2} className="h-full [--duration:36s] lg:shrink-0">
           {col1.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>
-        <Marquee vertical reverse pauseOnHover repeat={2} className="h-full [--duration:36s]">
+        {/* z-10 keeps it clear of the fades at the top and bottom of the wall */}
+        <VideoReviewCard className="relative z-10 hidden self-center lg:flex" />
+        <Marquee vertical reverse pauseOnHover repeat={2} className="h-full [--duration:36s] lg:shrink-0">
           {col2.map((r) => (
-            <ReviewCard key={r.name + r.role} review={r} />
-          ))}
-        </Marquee>
-        <Marquee vertical pauseOnHover repeat={3} className="hidden h-full [--duration:36s] lg:flex">
-          {col3.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>

@@ -65,6 +65,12 @@
     transform: translateY(calc(-100% - var(--gap)));
     }
   }
+  --animate-gradient: gradient 8s linear infinite;
+  @keyframes gradient {
+  to {
+    background-position: var(--bg-size, 300%) 0;
+    }
+  }
 }
 
 :root {
@@ -169,6 +175,13 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The smooth cursor draws its own pointer, so the system one is hidden everywhere
+   while it runs. The class is only on <html> when the component is active. */
+.smooth-cursor-on,
+.smooth-cursor-on * {
+  cursor: none !important;
 }
 
 .scrollbar-hide {

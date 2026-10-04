@@ -3,6 +3,15 @@
 import { motion } from "framer-motion";
 import { Users, Cpu, Clock, Headphones } from "lucide-react";
 import { CountUp } from "@/components/count-up";
+import { TextAnimate } from "@/components/ui/text-animate";
+import VaporizeTextCycle from "@/components/ui/vapour-text-effect";
+
+// The three promises from the hero's "What we make" panel, shown one at a time.
+const PROMISES = [
+  "Build. Innovate. Grow.",
+  "Build. Automate. Achieve.",
+  "Custom. Scalable. Reliable.",
+];
 
 const STATS = [
   {
@@ -45,15 +54,34 @@ export function WhyUs() {
         transition={{ duration: 0.6 }}
         className="mx-auto max-w-2xl text-center"
       >
-        <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+        <TextAnimate
+          as="span"
+          animation="slideLeft"
+          by="character"
+          once
+          className="text-xs font-semibold uppercase tracking-widest text-primary"
+        >
           Why us
-        </span>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+        </TextAnimate>
+        <TextAnimate
+          as="h2"
+          animation="slideUp"
+          by="word"
+          once
+          accessible={false}
+          className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl"
+        >
           Reasons teams choose us — and stay
-        </h2>
+        </TextAnimate>
         <p className="mt-4 text-base leading-relaxed text-background/60">
           The reasons teams choose us — and stay with us — for the long run.
         </p>
+        {/* each promise turns to dust before the next one fades in */}
+        <VaporizeTextCycle
+          texts={PROMISES}
+          animation={{ vaporizeDuration: 2, fadeInDuration: 1, waitDuration: 1.5 }}
+          className="mt-6 h-12 text-2xl font-bold text-primary sm:text-3xl"
+        />
       </motion.div>
 
       <motion.div

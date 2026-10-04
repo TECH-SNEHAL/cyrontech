@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Search, PenTool, Code2, Rocket } from "lucide-react";
+import { TextAnimate } from "@/components/ui/text-animate";
 
 const STEPS = [
   {
@@ -41,11 +42,20 @@ export function Process() {
         className="mx-auto max-w-2xl text-center"
       >
         <span className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-foreground/5 px-3 py-1 text-xs font-medium text-foreground/70">
-          How we work
+          <TextAnimate as="span" animation="slideLeft" by="character" once>
+            How we work
+          </TextAnimate>
         </span>
-        <h2 className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <TextAnimate
+          as="h2"
+          animation="slideUp"
+          by="word"
+          once
+          accessible={false}
+          className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+        >
           A process built to ship
-        </h2>
+        </TextAnimate>
         <p className="mt-4 text-base leading-relaxed text-foreground/50">
           Four stages, no surprises — you always know what we&apos;re working on
           and what comes next.

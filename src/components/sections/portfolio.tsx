@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { TextAnimate } from "@/components/ui/text-animate";
 import {
   Users,
   CalendarCheck,
@@ -242,11 +243,20 @@ export function Portfolio() {
         className="mx-auto max-w-2xl text-center"
       >
         <span className="inline-flex items-center gap-2 rounded-full border border-foreground/15 bg-foreground/5 px-3 py-1 text-xs font-medium text-foreground/70">
-          Our work
+          <TextAnimate as="span" animation="slideLeft" by="character" once>
+            Our work
+          </TextAnimate>
         </span>
-        <h2 className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <TextAnimate
+          as="h2"
+          animation="slideUp"
+          by="word"
+          once
+          accessible={false}
+          className="mt-5 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+        >
           The kind of products we ship
-        </h2>
+        </TextAnimate>
         <p className="mt-4 text-base leading-relaxed text-foreground/50">
           A selection of recent builds — apps, websites, and internal tools.
         </p>
