@@ -4,6 +4,23 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+// Switches off every CSS transition for the moment the theme changes, so all the colours
+// change together instead of fading at their own speeds. next-themes can do this itself
+// (disableTransitionOnChange), but it then also does it as every page opens, which
+// re-styles the whole document twice while the page is loading.
+function withoutTransitions(change: () => void) {
+  const style = document.createElement("style");
+  style.appendChild(
+    document.createTextNode(
+      "*,*::before,*::after{-webkit-transition:none!important;transition:none!important}"
+    )
+  );
+  document.head.appendChild(style);
+  change();
+  // the new theme is applied and painted within two frames; transitions come back after that
+  requestAnimationFrame(() => requestAnimationFrame(() => style.remove()));
+}
+
 export function ThemeToggle({ className }: { className?: string }) {
   const { setTheme } = useTheme();
 
@@ -14,8 +31,10 @@ export function ThemeToggle({ className }: { className?: string }) {
     <button
       type="button"
       onClick={() =>
-        setTheme(
-          document.documentElement.classList.contains("dark") ? "light" : "dark"
+        withoutTransitions(() =>
+          setTheme(
+            document.documentElement.classList.contains("dark") ? "light" : "dark"
+          )
         )
       }
       aria-label="Toggle dark mode"

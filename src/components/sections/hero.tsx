@@ -1,15 +1,17 @@
 "use client";
 
-import { useRef } from "react";
-import { motion } from "framer-motion";
+import { Fragment, useRef } from "react";
 import { ArrowRight } from "lucide-react";
 import { WhatWeMake } from "@/components/what-we-make";
 import { AnimatedGradientText } from "@/components/ui/animated-gradient-text";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { SpiderCursor } from "@/components/ui/spider-cursor";
-import { TextAnimate } from "@/components/ui/text-animate";
 
 const EXPERTISE = ["Web", "Mobile", "Cloud", "UI/UX", "CRM", "Automation"];
+// The first words of the headline, which sharpen out of a blur one after another.
+const HEADLINE_LEAD = ["Software", "built", "around"];
+// milliseconds between one word starting and the next
+const WORD_STAGGER = 60;
 
 export function Hero() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -46,11 +48,9 @@ export function Hero() {
       />
 
       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-16 px-6 md:px-12 lg:grid-cols-2">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        >
+        {/* The hero fades up with a CSS animation, so it shows with the first paint. Driven by
+            script, it stayed invisible until the page's JavaScript had started. */}
+        <div className="animate-enter-up">
           {/* the brand name in dots that scatter away from the pointer */}
           <ParticleTextEffect
             text="CYRONTECH"
@@ -59,9 +59,19 @@ export function Hero() {
             className="mb-3 aspect-[5/1] w-full max-w-lg"
           />
           <h1 className="text-balance text-5xl font-bold leading-[1.08] tracking-tight text-foreground sm:text-6xl">
-            <TextAnimate as="span" animation="blurIn" by="word" once accessible={false}>
-              Software built around
-            </TextAnimate>{" "}
+            <span className="whitespace-pre-wrap">
+              {HEADLINE_LEAD.map((word, i) => (
+                <Fragment key={word}>
+                  {i > 0 && " "}
+                  <span
+                    className="inline-block animate-enter-blur whitespace-pre"
+                    style={{ animationDelay: `${i * WORD_STAGGER}ms` }}
+                  >
+                    {word}
+                  </span>
+                </Fragment>
+              ))}
+            </span>{" "}
             <AnimatedGradientText colorFrom="var(--primary)" colorTo="var(--brand-blue)">
               your business, not ours
             </AnimatedGradientText>
@@ -107,16 +117,11 @@ export function Hero() {
               <span key={item}>{item}</span>
             ))}
           </div>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          className="hidden lg:block"
-        >
+        <div className="hidden animate-enter-left lg:block">
           <WhatWeMake />
-        </motion.div>
+        </div>
       </div>
     </div>
   );

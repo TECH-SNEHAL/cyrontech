@@ -242,8 +242,12 @@ export function SmoothCursor({
     <motion.div
       style={{
         position: "fixed",
-        left: cursorX,
-        top: cursorY,
+        // Moved with a transform, not left/top: a transform is handled by the compositor,
+        // while left/top would lay the page out again on every frame the pointer moves.
+        left: 0,
+        top: 0,
+        x: cursorX,
+        y: cursorY,
         translateX: "-50%",
         translateY: "-50%",
         rotate: rotation,

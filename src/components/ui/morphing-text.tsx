@@ -32,10 +32,57 @@ const useMorphingText = (
   const text1Ref = useRef<HTMLSpanElement>(null)
   const text2Ref = useRef<HTMLSpanElement>(null)
 
+  // `fit` only. Sets the box to the width of word `index`, or part-way (`toward`, 0 to 1)
+  // to the width of the word after it. The words are measured each time, so a change of
+  // font size (the window being resized) is picked up.
+  const setWidth = useCallback(
+    (index: number, toward: number) => {
+      // the box whose width follows the word on show; there is none unless `fit` is set
+      const grid = text2Ref.current?.parentElement
+      const box = grid?.closest<HTMLElement>("[data-fit]")
+      if (!grid || !box?.parentElement) return
+
+      // Does the box share its line with the text before it? If it has wrapped to a line
+      // of its own, closing it up would let it jump back up beside that text, and every
+      // line below would move with each morph. There it keeps the width of the widest word
+      // and the alignment of the text around it.
+      const before = document.createRange()
+      before.selectNodeContents(box.parentElement)
+      before.setEndBefore(box)
+      const rects = before.getClientRects()
+      const last = rects[rects.length - 1]
+      const own = box.getBoundingClientRect()
+      const middle = own.top + own.height / 2
+      if (!last || !last.width || last.top > middle || last.bottom < middle) {
+        box.style.width = ""
+        grid.style.justifyItems = ""
+        grid.style.textAlign = ""
+        return
+      }
+
+      // each word as wide as itself and starting at the left of the cell, so it can be
+      // measured and the box can close up to it
+      grid.style.justifyItems = "start"
+      grid.style.textAlign = "left"
+      const widths = [...grid.querySelectorAll<HTMLElement>("[data-text]")].map(
+        (el) => el.getBoundingClientRect().width
+      )
+      if (!widths.length) return
+      const from = widths[index % widths.length]
+      const to = widths[(index + 1) % widths.length]
+      // eased, so the line glides to its new width instead of starting and stopping abruptly
+      const eased = toward * toward * (3 - 2 * toward)
+      box.style.width = `${from + (to - from) * eased}px`
+    },
+    []
+  )
+
   const setStyles = useCallback(
     (fraction: number) => {
       const [current1, current2] = [text1Ref.current, text2Ref.current]
       if (!current1 || !current2) return
+
+      setWidth(textIndexRef.current, fraction)
 
       // Past this radius the word is too faint to survive the threshold, so a wider
       // blur (the original goes to 100px) costs frame time and shows nothing.
@@ -54,7 +101,7 @@ const useMorphingText = (
 
       if (current1.parentElement) current1.parentElement.style.filter = MELT
     },
-    [texts]
+    [texts, setWidth]
   )
 
   const doMorph = useCallback(() => {
@@ -85,7 +132,8 @@ const useMorphingText = (
       current1.style.opacity = "0%"
       if (current1.parentElement) current1.parentElement.style.filter = ""
     }
-  }, [])
+    setWidth(textIndexRef.current, 0)
+  }, [setWidth])
 
   useEffect(() => {
     const target = text2Ref.current
@@ -94,9 +142,17 @@ const useMorphingText = (
       return
 
     let animationFrameId: number | null = null
+    let holdTimer: ReturnType<typeof setTimeout> | null = null
+    let visible = false
 
-    const animate = (now: number) => {
+    function start() {
+      if (!visible || animationFrameId != null || holdTimer != null) return
+      timeRef.current = performance.now()
       animationFrameId = requestAnimationFrame(animate)
+    }
+
+    function animate(now: number) {
+      animationFrameId = null
 
       // a long gap (a hidden tab) counts as one frame, not a jump through the words
       const dt = Math.min((now - timeRef.current) / 1000, 0.1)
@@ -104,27 +160,41 @@ const useMorphingText = (
 
       cooldownRef.current -= dt
 
-      if (cooldownRef.current <= 0) doMorph()
-      else doCooldown()
+      if (cooldownRef.current <= 0) {
+        doMorph()
+        animationFrameId = requestAnimationFrame(animate)
+        return
+      }
+
+      // The word is held still now, and nothing changes until the hold ends: the frame loop
+      // stops, and a timer starts it again for the next morph. Running the loop through the
+      // hold made a frame sixty times a second to draw the same word.
+      doCooldown()
+      holdTimer = setTimeout(() => {
+        holdTimer = null
+        cooldownRef.current = 0
+        start()
+      }, cooldownRef.current * 1000)
     }
 
     // runs only while the text is on screen
     const visibility = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        if (animationFrameId == null) {
-          timeRef.current = performance.now()
-          animationFrameId = requestAnimationFrame(animate)
-        }
-      } else if (animationFrameId != null) {
-        cancelAnimationFrame(animationFrameId)
-        animationFrameId = null
+      visible = entry.isIntersecting
+      if (visible) {
+        start()
+        return
       }
+      if (animationFrameId != null) cancelAnimationFrame(animationFrameId)
+      if (holdTimer != null) clearTimeout(holdTimer)
+      animationFrameId = null
+      holdTimer = null
     })
     visibility.observe(target)
 
     return () => {
       visibility.disconnect()
       if (animationFrameId != null) cancelAnimationFrame(animationFrameId)
+      if (holdTimer != null) clearTimeout(holdTimer)
     }
   }, [doMorph, doCooldown])
 
@@ -139,6 +209,12 @@ interface MorphingTextProps {
    * as its widest word so the line never shifts.
    */
   inline?: boolean
+  /**
+   * With `inline`: the box is as wide as the word on show, and its width follows each
+   * morph, so the line closes up around a shorter word. For centred text, where a box as
+   * wide as the widest word would leave a gap beside the shorter ones.
+   */
+  fit?: boolean
   /** Seconds one word takes to melt into the next. */
   morphTime?: number
   /** Seconds each word is held still. */
@@ -205,6 +281,7 @@ export const MorphingText: React.FC<MorphingTextProps> = ({
   texts,
   className,
   inline = false,
+  fit = false,
   morphTime = 1.5,
   cooldownTime = 0.5,
 }) => {
@@ -218,12 +295,9 @@ export const MorphingText: React.FC<MorphingTextProps> = ({
   )
 
   if (inline) {
-    return (
+    const grid = (
       <span
-        className={cn(
-          "relative inline-grid whitespace-nowrap",
-          className
-        )}
+        className={cn("relative inline-grid whitespace-nowrap", className)}
       >
         {/* Every word, unseen, in the one grid cell the visible layers share: the
             cell is as wide as the widest. The words are generated content, so
@@ -239,6 +313,17 @@ export const MorphingText: React.FC<MorphingTextProps> = ({
         {layers}
         <SvgFilters />
       </span>
+    )
+    // The grid stays as wide as the widest word, so the melting filter never cuts a word
+    // off. This box around it is what the line sees: its width is set to the word on show,
+    // and the grid runs past its edge unseen. (The page must clip what runs past its own
+    // edge, or on a narrow screen that would let it scroll sideways.)
+    return fit ? (
+      <span data-fit className="inline-block">
+        {grid}
+      </span>
+    ) : (
+      grid
     )
   }
 

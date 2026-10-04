@@ -31,12 +31,15 @@ export interface ParticleTextEffectProps {
   className?: string;
   align?: "left" | "center";
   animationForce?: number;
-  /** Gap between dots, in CSS pixels. */
+  /** Gap between dots, in CSS pixels. Small text gets a finer gap so it stays readable. */
   particleDensity?: number;
+  /**
+   * The share of the box's height the font size may take; the rest is room for
+   * dots to scatter into. At 1 the text is as large as the box allows.
+   */
+  textHeight?: number;
 }
 
-// the text takes this share of the box's height; the rest is room for dots to scatter into
-const TEXT_HEIGHT = 0.62;
 // retina density is not worth the extra dots here
 const MAX_DPR = 2;
 
@@ -47,6 +50,7 @@ export function ParticleTextEffect({
   align = "center",
   animationForce = 80,
   particleDensity = 4,
+  textHeight = 0.62,
 }: ParticleTextEffectProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // a string, so a new array with the same colours does not rebuild the dots
@@ -66,6 +70,10 @@ export function ParticleTextEffect({
     let dpr = 1;
     let rafId: number | null = null;
     let disposed = false;
+    // the dots are built once the typeface has loaded, and again only when something changes
+    let ready = false;
+    let builtW = 0;
+    let builtH = 0;
 
     function draw(p: Particle) {
       ctx!.fillStyle = p.color;
@@ -75,20 +83,24 @@ export function ParticleTextEffect({
     }
 
     // Draws the text once, reads back which pixels it covers, and turns a grid of them into dots.
-    function build() {
-      if (disposed) return;
+    // Unless `force` is set, a canvas that is still the size it was built at is left alone.
+    function build(force: boolean) {
+      if (disposed || !ready) return;
       const rect = canvas!.getBoundingClientRect();
       if (!rect.width || !rect.height) return;
 
       dpr = min(window.devicePixelRatio || 1, MAX_DPR);
       const w = round(rect.width * dpr);
       const h = round(rect.height * dpr);
+      if (!force && w === builtW && h === builtH) return;
+      builtW = w;
+      builtH = h;
       canvas!.width = w;
       canvas!.height = h;
 
       const styles = getComputedStyle(canvas!);
       const family = styles.fontFamily || "sans-serif";
-      let size = h * TEXT_HEIGHT;
+      let size = h * textHeight;
       ctx!.font = `900 ${size}px ${family}`;
       const fit = (w * 0.98) / ctx!.measureText(text).width;
       if (fit < 1) size *= fit;
@@ -117,7 +129,9 @@ export function ParticleTextEffect({
       ctx!.fillStyle = gradient;
       ctx!.fillText(text, left, h / 2);
 
-      const step = max(1, round(particleDensity * dpr));
+      // at most a 22nd of the font size, or small letters would be too few dots to read
+      const gap = min(particleDensity, max(1.5, size / dpr / 22));
+      const step = max(1, round(gap * dpr));
       const data = ctx!.getImageData(0, 0, w, h).data;
       const next: Particle[] = [];
       for (let y = 0; y < h; y += step) {
@@ -126,9 +140,9 @@ export function ParticleTextEffect({
           // skip the faint anti-aliased fringe, so edges stay crisp
           if (data[i + 3] < 128) continue;
           // each dot keeps the colour under it, nudged a little so the fill is not flat
-          const [r, g, b] = [0, 1, 2].map((k) =>
-            max(0, min(255, round(data[i + k] + rand(-13, 13)))),
-          );
+          const r = max(0, min(255, round(data[i] + rand(-13, 13))));
+          const g = max(0, min(255, round(data[i + 1] + rand(-13, 13))));
+          const b = max(0, min(255, round(data[i + 2] + rand(-13, 13))));
           next.push({
             ox: x,
             oy: y,
@@ -205,12 +219,18 @@ export function ParticleTextEffect({
 
     // the text must be drawn in the page's own typeface, so wait until it has loaded
     const family = getComputedStyle(canvas).fontFamily || "sans-serif";
-    document.fonts.load(`900 48px ${family}`, text).then(build, build);
+    const first = () => {
+      ready = true;
+      build(true);
+    };
+    document.fonts.load(`900 48px ${family}`, text).then(first, first);
 
-    const resizeObserver = new ResizeObserver(build);
+    // An observer also reports once when it starts watching, when nothing has changed:
+    // building the dots then as well would do the whole job twice as the page opens.
+    const resizeObserver = new ResizeObserver(() => build(false));
     resizeObserver.observe(canvas);
     // the colours come from CSS variables, which change with the theme class on <html>
-    const themeObserver = new MutationObserver(build);
+    const themeObserver = new MutationObserver(() => build(true));
     themeObserver.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
@@ -235,7 +255,7 @@ export function ParticleTextEffect({
       canvas.removeEventListener("pointerleave", handleLeave);
       canvas.removeEventListener("pointercancel", handleLeave);
     };
-  }, [text, colorKey, align, animationForce, particleDensity]);
+  }, [text, colorKey, align, animationForce, particleDensity, textHeight]);
 
   return (
     <canvas

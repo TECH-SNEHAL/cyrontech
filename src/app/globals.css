@@ -65,10 +65,37 @@
     transform: translateY(calc(-100% - var(--gap)));
     }
   }
-  --animate-gradient: gradient 8s linear infinite;
-  @keyframes gradient {
+  /* The first screen's entrance: see the note above .animate-enter-up below. */
+  --animate-enter-up: enter-up 0.5s cubic-bezier(0, 0, 0.58, 1) backwards;
+  --animate-enter-left: enter-left 0.5s cubic-bezier(0, 0, 0.58, 1) 0.1s backwards;
+  --animate-enter-down: enter-down 0.4s cubic-bezier(0.42, 0, 0.58, 1) backwards;
+  --animate-enter-blur: enter-blur 0.3s cubic-bezier(0.42, 0, 0.58, 1) both;
+  @keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+    }
+  }
+  @keyframes enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+    }
+  }
+  @keyframes enter-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+    }
+  }
+  @keyframes enter-blur {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    }
   to {
-    background-position: var(--bg-size, 300%) 0;
+    opacity: 1;
+    filter: blur(0px);
     }
   }
 }
@@ -175,6 +202,24 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* The entrance of the navbar and the hero (animate-enter-up/-left/-down/-blur, defined in the
+   theme block above) is plain CSS, with the movement, duration and easing the script-driven
+   version had. A script-driven entrance leaves the first screen invisible until the page's
+   JavaScript has downloaded and started, which on a slow phone is several seconds; these
+   start with the first paint. */
+
+/* Animations that run only while their element is on screen (see usePauseOffscreen).
+   An SVG dash or a blinking caret cannot be handed to the compositor, and while one runs
+   the browser makes a full frame on the main thread sixty times a second. */
+[data-anim="paused"],
+[data-anim="paused"] *,
+[data-anim="paused"]::before,
+[data-anim="paused"]::after,
+[data-anim="paused"] *::before,
+[data-anim="paused"] *::after {
+  animation-play-state: paused !important;
 }
 
 /* The smooth cursor draws its own pointer, so the system one is hidden everywhere

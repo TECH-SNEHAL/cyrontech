@@ -1,4 +1,7 @@
-import React, { ComponentPropsWithoutRef } from 'react';
+'use client';
+
+import React, { ComponentPropsWithoutRef, useRef } from 'react';
+import { usePauseOffscreen } from '@/lib/use-pause-offscreen';
 import { cn } from '@/lib/utils';
 
 interface MarqueeProps extends ComponentPropsWithoutRef<'div'> {
@@ -47,9 +50,15 @@ export function Marquee({
   ariaLabel,
   ...props
 }: MarqueeProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  // the strip only scrolls while it is on screen
+  usePauseOffscreen(ref);
+
   return (
     <div
       {...props}
+      ref={ref}
+      data-anim="paused"
       data-slot="marquee"
       aria-label={ariaLabel}
       aria-roledescription={ariaLabel ? 'carousel' : undefined}

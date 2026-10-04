@@ -10,6 +10,14 @@ import { cn } from "@/lib/utils";
 // to the element's own CSS, so the text follows the theme and Tailwind classes;
 // the size shrinks to fit the widest phrase; each phrase is held before it
 // goes; and visitors who ask for reduced motion get still text.
+//
+// It is also far cheaper to run than the original, with the same picture: nothing
+// is measured or built until the text is near the screen; a phrase that is standing
+// still is drawn once, not sixty times a second; and a speck's colour is set as a
+// number, not rebuilt as a string for every speck in every frame.
+
+// How close to the screen the text has to be before its specks are built.
+const NEAR_MARGIN = "600px";
 
 export enum Tag {
   H1 = "h1",
@@ -47,7 +55,8 @@ type Particle = {
   y: number;
   originalX: number;
   originalY: number;
-  color: string;
+  // the speck's colour without its opacity, which is set separately on each draw
+  rgb: string;
   opacity: number;
   originalAlpha: number;
   velocityX: number;
@@ -95,9 +104,15 @@ export default function VaporizeTextCycle({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const isInView = useIsInView(wrapperRef);
+  // true from the first time the text comes near the screen
+  const isNear = useIsInView(wrapperRef, NEAR_MARGIN, true);
   const particlesRef = useRef<Particle[]>([]);
   const textBoundariesRef = useRef<TextBoundaries | null>(null);
   const waitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // A phrase that is standing still is drawn once. This asks for it to be drawn again,
+  // and `wakeRef` restarts the loop if it has stopped to wait.
+  const redrawRef = useRef(true);
+  const wakeRef = useRef<(() => void) | null>(null);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [animationState, setAnimationState] = useState<AnimationState>("static");
   const vaporizeProgressRef = useRef(0);
@@ -140,7 +155,7 @@ export default function VaporizeTextCycle({
   // box resizes, the web font arrives, or the theme class on <html> changes.
   useEffect(() => {
     const el = wrapperRef.current;
-    if (!el) return;
+    if (!el || !isNear) return;
 
     const read = () => {
       const css = getComputedStyle(el);
@@ -167,18 +182,29 @@ export default function VaporizeTextCycle({
       attributes: true,
       attributeFilter: ["class"],
     });
+    // If the typeface has not loaded yet, the first draw uses a fallback face: redraw in the
+    // real one when it arrives. A typeface that is already here needs no second draw.
     let live = true;
-    document.fonts.ready.then(() => {
-      // the first draw may have used a fallback face: redraw in the real one
+    const css = getComputedStyle(el);
+    const face = `${fontWeight ?? css.fontWeight} 16px ${fontFamily ?? css.fontFamily}`;
+    const redraw = () => {
       if (live) setLayout((prev) => (prev ? { ...prev } : prev));
-    });
+    };
+    try {
+      if (!document.fonts.check(face, textsKey)) {
+        document.fonts.load(face, textsKey).then(redraw, () => {});
+      }
+    } catch {
+      // a font list the browser cannot parse: fall back to waiting for every font
+      document.fonts.ready.then(redraw);
+    }
 
     return () => {
       live = false;
       resizeObserver.disconnect();
       themeObserver.disconnect();
     };
-  }, [fontFamily, fontSize, fontWeight, color]);
+  }, [isNear, fontFamily, fontSize, fontWeight, color, textsKey]);
 
   // Start the cycle when in view; hold the first phrase for a moment before it goes
   useEffect(() => {
@@ -208,9 +234,12 @@ export default function VaporizeTextCycle({
     if (!isInView) return;
 
     let lastTime = performance.now();
-    let frameId: number;
+    let frameId = 0;
+    // a loop that has just started always draws
+    redrawRef.current = true;
 
     const animate = (currentTime: number) => {
+      frameId = 0;
       const deltaTime = (currentTime - lastTime) / 1000;
       lastTime = currentTime;
 
@@ -222,15 +251,22 @@ export default function VaporizeTextCycle({
         return;
       }
 
+      // A phrase that is standing still looks the same in every frame: draw it once and stop.
+      // The loop starts again when the state changes, or when the phrase is redrawn (wakeRef).
+      if (animationState === "static" || animationState === "waiting") {
+        if (redrawRef.current) {
+          redrawRef.current = false;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          memoizedRenderParticles(ctx, particlesRef.current);
+        }
+        return;
+      }
+
       // Clear canvas only if we're going to draw
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update based on animation state
       switch (animationState) {
-        case "static": {
-          memoizedRenderParticles(ctx, particlesRef.current);
-          break;
-        }
         case "vaporizing": {
           // Calculate progress based on duration
           vaporizeProgressRef.current += deltaTime * 100 / (animationDurations.VAPORIZE_DURATION / 1000);
@@ -264,14 +300,18 @@ export default function VaporizeTextCycle({
           // Use particles for fade-in
           ctx.save();
           ctx.scale(globalDpr, globalDpr);
-          particlesRef.current.forEach(particle => {
+          const fade = Math.min(fadeOpacityRef.current, 1);
+          let rgb = "";
+          for (const particle of particlesRef.current) {
             particle.x = particle.originalX;
             particle.y = particle.originalY;
-            const opacity = Math.min(fadeOpacityRef.current, 1) * particle.originalAlpha;
-            const color = particle.color.replace(/[\d.]+\)$/, `${opacity})`);
-            ctx.fillStyle = color;
+            if (particle.rgb !== rgb) {
+              rgb = particle.rgb;
+              ctx.fillStyle = rgb;
+            }
+            ctx.globalAlpha = fade * particle.originalAlpha;
             ctx.fillRect(particle.x / globalDpr, particle.y / globalDpr, 1, 1);
-          });
+          }
           ctx.restore();
 
           // a frame can run again before the state change lands, so only one timer is set
@@ -286,18 +326,19 @@ export default function VaporizeTextCycle({
           }
           break;
         }
-        case "waiting": {
-          memoizedRenderParticles(ctx, particlesRef.current);
-          break;
-        }
       }
 
       frameId = requestAnimationFrame(animate);
     };
 
-    frameId = requestAnimationFrame(animate);
+    const wake = () => {
+      if (!frameId) frameId = requestAnimationFrame(animate);
+    };
+    wakeRef.current = wake;
+    wake();
 
     return () => {
+      wakeRef.current = null;
       if (frameId) {
         cancelAnimationFrame(frameId);
       }
@@ -328,6 +369,9 @@ export default function VaporizeTextCycle({
     if (rendered) {
       particlesRef.current = rendered.particles;
       textBoundariesRef.current = rendered.textBoundaries;
+      // the canvas was emptied for the new phrase: a loop that is standing still must draw it
+      redrawRef.current = true;
+      wakeRef.current?.();
     }
   }, [layout, textsKey, currentTextIndex, alignment]);
 
@@ -372,6 +416,9 @@ function SeoElement({ tag = Tag.P, texts }: { tag: Tag; texts: string[] }) {
 // ------------------------------------------------------------ //
 // RENDER CANVAS
 // ------------------------------------------------------------ //
+// Shared by every instance: it is only used for the moment a phrase is read.
+let sampler: HTMLCanvasElement | null = null;
+
 const renderCanvas = ({
   canvas,
   layout,
@@ -387,7 +434,10 @@ const renderCanvas = ({
 }) => {
   if (!canvas || !layout.width || !layout.height) return null;
 
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+  // The phrase is drawn and read back on a canvas of its own, never shown. Reading pixels
+  // back from the visible canvas would make the browser draw every frame of it in software.
+  sampler ??= document.createElement("canvas");
+  const ctx = sampler.getContext("2d", { willReadFrequently: true });
   if (!ctx) return null;
 
   const { width, height, dpr } = layout;
@@ -397,6 +447,8 @@ const renderCanvas = ({
   canvas.style.height = `${height}px`;
   canvas.width = Math.floor(width * dpr);
   canvas.height = Math.floor(height * dpr);
+  sampler.width = canvas.width;
+  sampler.height = canvas.height;
 
   // One size for every phrase: the CSS size, or smaller if the widest phrase would not fit
   const fontAt = (px: number) => `${layout.fontWeight} ${px}px ${layout.fontFamily}`;
@@ -489,12 +541,20 @@ const createParticles = (
   const sampleRate = Math.max(1, Math.round(baseSampleRate)); // Adjust sample rate by density
 
   // Sample the text pixels and create particles
+  // nearly every speck is the same colour, so its string is made once and shared
+  let lastKey = -1;
+  let rgb = "";
   for (let y = 0; y < canvas.height; y += sampleRate) {
     for (let x = 0; x < canvas.width; x += sampleRate) {
       const index = (y * canvas.width + x) * 4;
       const alpha = data[index + 3];
 
       if (alpha > 0) {
+        const key = (data[index] << 16) | (data[index + 1] << 8) | data[index + 2];
+        if (key !== lastKey) {
+          lastKey = key;
+          rgb = `rgb(${data[index]}, ${data[index + 1]}, ${data[index + 2]})`;
+        }
         // Remove density from opacity calculation
         const originalAlpha = alpha / 255 * (sampleRate / currentDPR);
         const particle = {
@@ -502,7 +562,7 @@ const createParticles = (
           y,
           originalX: x,
           originalY: y,
-          color: `rgba(${data[index]}, ${data[index + 1]}, ${data[index + 2]}, ${originalAlpha})`,
+          rgb,
           opacity: originalAlpha,
           originalAlpha,
           // Animation properties
@@ -535,11 +595,14 @@ const updateParticles = (
 ) => {
   let allParticlesVaporized = true;
 
-  particles.forEach(particle => {
+  for (const particle of particles) {
     // Only animate particles that have been "vaporized"
     const shouldVaporize = direction === "left-to-right"
       ? particle.originalX <= vaporizeX
       : particle.originalX >= vaporizeX;
+
+    // a speck that has already faded out is never drawn again: there is nothing left to move
+    if (shouldVaporize && particle.speed !== 0 && particle.opacity <= 0) continue;
 
     if (shouldVaporize) {
       // When a particle is first vaporized, determine if it should fade quickly based on density
@@ -608,35 +671,42 @@ const updateParticles = (
       // If there are any particles not yet reached by the vaporize wave
       allParticlesVaporized = false;
     }
-  });
+  }
 
   return allParticlesVaporized;
 };
 
+// Each speck's opacity goes in as a number (globalAlpha) and its colour is only set when it
+// differs from the last speck's. Writing an "rgba(…)" string for every speck made the browser
+// build and parse tens of thousands of strings a frame, for the same picture.
 const renderParticles = (ctx: CanvasRenderingContext2D, particles: Particle[], globalDpr: number) => {
   ctx.save();
   ctx.scale(globalDpr, globalDpr);
 
-  particles.forEach(particle => {
+  let rgb = "";
+  for (const particle of particles) {
     if (particle.opacity > 0) {
-      const color = particle.color.replace(/[\d.]+\)$/, `${particle.opacity})`);
-      ctx.fillStyle = color;
+      if (particle.rgb !== rgb) {
+        rgb = particle.rgb;
+        ctx.fillStyle = rgb;
+      }
+      ctx.globalAlpha = particle.opacity;
       ctx.fillRect(particle.x / globalDpr, particle.y / globalDpr, 1, 1);
     }
-  });
+  }
 
   ctx.restore();
 };
 
 const resetParticles = (particles: Particle[]) => {
-  particles.forEach(particle => {
+  for (const particle of particles) {
     particle.x = particle.originalX;
     particle.y = particle.originalY;
     particle.opacity = particle.originalAlpha;
     particle.speed = 0;
     particle.velocityX = 0;
     particle.velocityY = 0;
-  });
+  }
 };
 
 // ------------------------------------------------------------ //
@@ -687,9 +757,10 @@ function transformValue(input: number, inputRange: number[], outputRange: number
 }
 
 /**
- * Custom hook to check if an element is in the viewport
+ * Custom hook to check if an element is in the viewport, or within `rootMargin` of it.
+ * With `once`, it stays true from the first time the element is seen.
  */
-function useIsInView(ref: React.RefObject<HTMLElement | null>) {
+function useIsInView(ref: React.RefObject<HTMLElement | null>, rootMargin = "50px", once = false) {
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
@@ -698,8 +769,9 @@ function useIsInView(ref: React.RefObject<HTMLElement | null>) {
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsInView(entry.isIntersecting);
+        if (once && entry.isIntersecting) observer.disconnect();
       },
-      { threshold: 0, rootMargin: '50px' }
+      { threshold: 0, rootMargin }
     );
 
     observer.observe(ref.current);
@@ -707,7 +779,7 @@ function useIsInView(ref: React.RefObject<HTMLElement | null>) {
     return () => {
       observer.disconnect();
     };
-  }, [ref]);
+  }, [ref, rootMargin, once]);
 
   return isInView;
 }

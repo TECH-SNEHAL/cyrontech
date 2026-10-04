@@ -14,10 +14,23 @@ const ORGANIZATION_JSON_LD = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: "Cyron Tech",
+  // the other ways the name is written, so a search for any of them finds the site
+  alternateName: ["Cyrontech", "CyronTech"],
   url: SITE_URL,
   logo: `${SITE_URL}/icon.png`,
+  image: `${SITE_URL}/icon.png`,
   description:
     "Cyron Tech builds websites, mobile apps, CRMs, and automation designed around how your business actually works.",
+  // what the company builds, as listed in the Services section
+  knowsAbout: [
+    "Website development",
+    "Mobile app development",
+    "Android and iOS apps",
+    "CRM development",
+    "Business automation",
+    "Desktop applications",
+    "Custom software development",
+  ],
   email: "contact@cyrontech.in",
   sameAs: [
     "https://www.linkedin.com/in/sharon7103",
@@ -39,7 +52,10 @@ const WEBSITE_JSON_LD = {
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   url: SITE_URL,
+  // Google takes the site name it shows above a result from `name` and `alternateName` here
   name: "Cyron Tech",
+  alternateName: ["Cyrontech", "CyronTech", "cyrontech.in"],
+  inLanguage: "en",
   publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
@@ -53,6 +69,9 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  // Only a few small labels far down the home page use it, and /developers does not use it
+  // at all, so it is fetched when it is needed, not ahead of the first screen.
+  preload: false,
 });
 
 const TITLE = "Cyron Tech — Software Development Agency";
@@ -141,12 +160,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         />
       </head>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-          disableTransitionOnChange
-        >
+        {/* Transitions are switched off during a theme change by the toggle itself (see
+            ThemeToggle). The provider's own option for that also runs as every page opens. */}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           {children}
           <SmoothCursor />
         </ThemeProvider>

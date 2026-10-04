@@ -64,11 +64,21 @@ export function ParticleImage({
     let introStart: number | null = null;
     let introDone = false;
     const displaced: number[] = [];
+    let disposed = false;
+    // the picture has been decoded, so reading it will not hold up the page
+    let decoded = false;
+    // the size and picture the dots were last built for
+    let builtFor = "";
 
     // Reads the image into one colour per cell and sends every dot home.
     function build() {
+      if (disposed || !decoded) return;
       const rect = canvas!.getBoundingClientRect();
       if (!rect.width || !rect.height || !image!.complete || !image!.naturalWidth) return;
+      // An observer also reports once when it starts watching, when nothing has changed.
+      const key = `${rect.width}x${rect.height}|${image!.currentSrc}`;
+      if (key === builtFor) return;
+      builtFor = key;
 
       width = rect.width;
       height = rect.height;
@@ -248,8 +258,21 @@ export function ParticleImage({
     // visitors who ask for less motion keep the plain image
     const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    build();
-    image.addEventListener("load", build);
+    // Reading a picture that has not been decoded yet makes the browser decode it there and
+    // then, on the main thread, while the page is still opening. Ask for it to be decoded in
+    // the background first.
+    function prepare() {
+      if (!image!.complete || !image!.naturalWidth) return;
+      decoded = false;
+      const done = () => {
+        decoded = true;
+        build();
+      };
+      image!.decode().then(done, done);
+    }
+
+    prepare();
+    image.addEventListener("load", prepare);
     const resizeObserver = new ResizeObserver(build);
     resizeObserver.observe(canvas);
 
@@ -261,9 +284,10 @@ export function ParticleImage({
     }
 
     return () => {
+      disposed = true;
       if (rafId != null) cancelAnimationFrame(rafId);
       if (introTimer != null) clearTimeout(introTimer);
-      image.removeEventListener("load", build);
+      image.removeEventListener("load", prepare);
       resizeObserver.disconnect();
       canvas.removeEventListener("pointermove", handleMove);
       canvas.removeEventListener("pointerdown", handleMove);

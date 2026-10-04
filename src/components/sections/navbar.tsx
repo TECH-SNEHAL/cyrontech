@@ -29,12 +29,8 @@ export function Navbar() {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className="fixed inset-x-0 top-4 z-50 mx-auto flex w-fit max-w-[95vw] items-center justify-center px-4"
-      >
+      {/* drops in with a CSS animation, so it is there with the first paint */}
+      <header className="fixed inset-x-0 top-4 z-50 mx-auto flex w-fit max-w-[95vw] animate-enter-down items-center justify-center px-4">
         <nav
           className={`flex items-center gap-1 rounded-full border border-foreground/10 px-2 py-1.5 backdrop-blur-md transition-colors ${
             scrolled ? "bg-background/80 shadow-lg shadow-black/5" : "bg-background/50"
@@ -90,7 +86,7 @@ export function Navbar() {
             {menuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
           </button>
         </nav>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {menuOpen && (
