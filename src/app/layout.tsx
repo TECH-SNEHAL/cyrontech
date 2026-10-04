@@ -14,7 +14,7 @@ const ORGANIZATION_JSON_LD = {
   "@id": `${SITE_URL}/#organization`,
   name: "Cyron Tech",
   url: SITE_URL,
-  logo: `${SITE_URL}/icon`,
+  logo: `${SITE_URL}/icon.png`,
   description:
     "Cyron Tech builds websites, mobile apps, CRMs, and automation designed around how your business actually works.",
   email: "contact@cyrontech.in",
@@ -54,7 +54,7 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
-const TITLE = "Cyron Tech — Websites, Apps, CRMs & Automation";
+const TITLE = "Cyron Tech — Software Development Agency";
 const DESCRIPTION =
   "Cyron Tech builds websites, mobile apps, CRMs, and automation designed around how your business actually works.";
 

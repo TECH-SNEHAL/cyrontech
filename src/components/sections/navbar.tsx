@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { name: "Services", link: "#services" },
   { name: "Process", link: "#process" },
   { name: "Reviews", link: "#testimonials" },
+  { name: "Developers", link: "/developers" },
   { name: "Contact", link: "#contact" },
 ];
 
@@ -41,9 +42,19 @@ export function Navbar() {
         >
           <Link
             href="#top"
-            className="mr-2 whitespace-nowrap bg-gradient-to-r from-primary to-brand-blue bg-clip-text px-2 text-sm font-bold tracking-tight text-transparent"
+            className="mr-2 flex items-center gap-2 whitespace-nowrap px-2 text-sm font-bold tracking-tight"
           >
-            Cyrontech
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/brand/cyron-mark.png"
+              alt=""
+              width={24}
+              height={24}
+              className="size-6 rounded-md"
+            />
+            <span className="bg-gradient-to-r from-primary to-brand-blue bg-clip-text text-transparent">
+              Cyrontech
+            </span>
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">

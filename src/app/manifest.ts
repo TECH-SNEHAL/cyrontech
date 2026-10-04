@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Cyron Tech — Websites, Apps, CRMs & Automation",
+    name: "Cyron Tech — Software Development Agency",
     short_name: "Cyron Tech",
     description:
       "Cyron Tech builds websites, mobile apps, CRMs, and automation designed around how your business actually works.",
@@ -12,8 +12,8 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: "#3b63d8",
     icons: [
       {
-        src: "/icon",
-        sizes: "any",
+        src: "/icon.png",
+        sizes: "192x192",
         type: "image/png",
       },
     ],

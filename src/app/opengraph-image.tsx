@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const alt =
-  "Cyron Tech — Websites, Apps, CRMs & Automation";
+  "Cyron Tech — Software Development Agency";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
