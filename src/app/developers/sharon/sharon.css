@@ -1,12 +1,6 @@
 /* Sharon's page reuses every .pf-root rule from ../portfolio.css (imported first in
-   profile.tsx) and only adds what her content needs that his didn't: the placeholder
-   portrait (no photo yet) and the org-map that replaces his code-module graph. */
-
-/* Placeholder portrait: a monogram card in the same slot/shape the real photo will use
-   once it exists, so swapping it in later only replaces this block with an <Image> +
-   ParticleImage, no layout change. */
-.pf-root .portrait.placeholder{display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--soft),var(--card))}
-.pf-root .portrait.placeholder span{font:500 clamp(48px,9vw,96px) var(--font-pf-sans),system-ui,sans-serif;color:var(--accent);letter-spacing:-.03em}
+   profile.tsx) and only adds what her content needs that his didn't: the org-map
+   that replaces his code-module graph, and a recognition section. */
 
 /* Org map: the same node-graph mechanism as the stack section's module map, standing in
    for a code dependency graph with the organizations and programs she's worked across. */

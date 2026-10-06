@@ -8,6 +8,7 @@ import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
 import { DustText } from "@/components/ui/dust-text";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { MorphingText } from "@/components/ui/morphing-text";
+import { ParticleImage } from "@/components/ui/particle-image";
 import { TextAnimate } from "@/components/ui/text-animate";
 import { usePauseOffscreen } from "@/lib/use-pause-offscreen";
 import "../portfolio.css";
@@ -466,6 +467,7 @@ export default function SharonProfile() {
   const [dark, setDark] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const caretRef = useRef<HTMLDivElement>(null);
+  const portraitRef = useRef<HTMLImageElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const picked = useRef(false);
 
@@ -581,10 +583,20 @@ export default function SharonProfile() {
 
         <main id="top">
           <section className="hero">
-            {/* Portrait placeholder until her photo is ready — same slot/shape a real
-                photo + ParticleImage will drop into later. */}
-            <div className="portrait placeholder">
-              <span>SM</span>
+            <div className="portrait">
+              <Image
+                ref={portraitRef}
+                src="/team/sharon-sunaina-blue-blazer.png"
+                alt="Sharon Sunaina Mohan"
+                fill
+                sizes="(max-width: 800px) 320px, 860px"
+                quality={95}
+                loading="eager"
+                fetchPriority="high"
+              />
+              {/* The photo stays a sharp image. Near the pointer it breaks into dots that
+                  scatter and drift back, like the name beside it. */}
+              <ParticleImage imageRef={portraitRef} holeColor="--soft" particleDensity={3} />
             </div>
             <ParticleTextEffect
               key={dark ? "dark" : "light"}

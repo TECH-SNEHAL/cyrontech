@@ -66,6 +66,7 @@ const PROFILE_JSON_LD = {
     jobTitle: "Project Manager & Client Relationship Management",
     description: DESCRIPTION,
     url: `${SITE_URL}/developers/sharon`,
+    image: `${SITE_URL}/team/sharon-sunaina-blue-blazer.png`,
     email: "sharonsunaina7@gmail.com",
     sameAs: [
       "https://linkedin.com/in/sharon7103",
