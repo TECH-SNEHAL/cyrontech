@@ -21,9 +21,11 @@ html:has(.pf-root.dark){color-scheme:dark!important}
 .pf-root button,
 .pf-root a{font:inherit}
 .pf-root nav button,
+.pf-root nav a,
 .pf-root .socials a{color:var(--muted);background:none;border:0;text-decoration:none;cursor:pointer;font:400 14px var(--font-pf-mono),monospace}
 .pf-root nav button.on,
 .pf-root nav button:hover,
+.pf-root nav a:hover,
 .pf-root .socials a:hover{color:var(--fg)}
 .pf-root .theme{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--line);border-radius:50%;background:var(--surface);color:var(--accent);cursor:pointer;transition:border-color .2s}
 .pf-root .theme:hover{border-color:var(--accent)}

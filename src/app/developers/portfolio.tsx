@@ -614,6 +614,7 @@ export default function Portfolio() {
                 {label}
               </button>
             ))}
+            <a href="/developers/sharon">Sharon ↗</a>
           </nav>
           <div className="headend">
             <span className="status">
