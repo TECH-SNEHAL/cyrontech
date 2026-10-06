@@ -180,9 +180,8 @@
   }
   html {
     @apply font-sans;
-    /* Lenis (see lenis-scroll.tsx) now owns the eased scroll, including
-       anchor jumps; CSS smooth-scroll stays off so the two don't fight. */
-    scroll-behavior: auto;
+    /* native scrolling, so the wheel never lags behind the pointer */
+    scroll-behavior: smooth;
   }
   /* anchor targets clear the fixed navbar instead of hiding under it */
   :target,
