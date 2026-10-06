@@ -6,8 +6,8 @@
    for a code dependency graph with the organizations and programs she's worked across. */
 .pf-root .orgnode rect{fill:var(--surface)}
 
-/* Recognition: awards and speaking, as two plain ruled columns. */
-.pf-root .recognition-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:70px;border-top:1px solid var(--line);padding-top:50px}
+/* Recognition: awards, speaking and certifications, as plain ruled columns. */
+.pf-root .recognition-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:70px;border-top:1px solid var(--line);padding-top:50px}
 .pf-root .recognition-col h4{font:500 14px var(--font-pf-mono),monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin:0 0 28px}
 .pf-root .recognition-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:22px}
 .pf-root .recognition-list li{display:flex;flex-direction:column;gap:4px;padding-bottom:22px;border-bottom:1px solid var(--edge)}
@@ -15,7 +15,11 @@
 .pf-root .recognition-list strong{font:500 17px/1.3 var(--font-pf-sans),system-ui,sans-serif;letter-spacing:-.01em;color:var(--fg)}
 .pf-root .recognition-list span{font-size:14px;color:var(--muted)}
 .pf-root .recognition-list em{font:12px var(--font-pf-mono),monospace;font-style:normal;color:var(--faint)}
-@media(max-width:800px){.pf-root .recognition-grid{grid-template-columns:1fr;gap:40px;margin-top:50px;padding-top:36px}}
+.pf-root .cert-link{text-decoration:none}
+.pf-root .cert-link strong{text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px;transition:color .2s,text-decoration-color .2s}
+.pf-root .cert-link:hover strong{color:var(--accent);text-decoration-color:var(--accent)}
+@media(max-width:1000px){.pf-root .recognition-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.pf-root .recognition-grid{grid-template-columns:1fr;gap:40px;margin-top:50px;padding-top:36px}}
 
 /* Section heads on a phone: the big outlined number and the title were tight enough
    together to force a mid-word break (seen on "experience"). Shrinking the number and
@@ -25,5 +29,14 @@
   .pf-root .sectionhead{flex-wrap:wrap;row-gap:4px}
   .pf-root .sectionhead span{font-size:48px}
   .pf-root .sectionhead b{overflow-wrap:normal;word-break:normal}
+}
+
+/* Project cards on a phone: the screenshots were taking most of the screen width
+   (phone shots at 285px, wide shots at full bleed). Scaled down so a card reads as
+   a preview, not the whole viewport. */
+@media(max-width:800px){
+  .pf-root .phone.small.shot{width:200px;padding:6px}
+  .pf-root .screen-shot{border-radius:14px}
+  .pf-root .caseart{gap:12px}
 }
 

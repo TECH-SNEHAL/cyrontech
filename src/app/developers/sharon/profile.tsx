@@ -48,6 +48,16 @@ const career: LogEntry[] = [
     chips: ["Technical requirements", "Business development", "Business analysis"],
   },
   {
+    tag: "work",
+    when: "2026",
+    title: "Director of IT",
+    org: "World Academy for the Future of Women (WAFW)",
+    points: [
+      // Placeholder: exact scope of this role not yet confirmed — fill in once details are shared.
+      "Details to be added.",
+    ],
+  },
+  {
     tag: "education",
     when: "2026 → 2028",
     title: "MSc Artificial Intelligence for Business Intelligence",
@@ -79,7 +89,7 @@ const career: LogEntry[] = [
     chips: ["Zoho CRM", "Workflow automation"],
   },
   {
-    tag: "work",
+    tag: "leadership",
     when: "Jun 2025 →",
     title: "WAFW India Alumni Representative",
     org: "World Academy for the Future of Women",
@@ -147,16 +157,6 @@ const career: LogEntry[] = [
     ],
   },
   {
-    tag: "work",
-    when: "Oct 2024 – Jan 2025",
-    title: "UMEED Apprenticeship / Career Readiness Program",
-    org: "UMEED, Hyderabad",
-    points: [
-      "Personal and professional development: CV building, public speaking, digital literacy, negotiation.",
-      "Later invited back as a beneficiary speaker at OFSI Sangam 2025.",
-    ],
-  },
-  {
     tag: "leadership",
     when: "2026 →",
     title: "Peer Mentor",
@@ -185,6 +185,40 @@ const speaking: { title: string; org: string }[] = [
   { title: "Panelist, Youth & Entrepreneurship", org: "Telangana Rising Global Summit 2025" },
   { title: "Alumna Panelist", org: "OFSI Sangam 2025, Omega Healthcare Management Services" },
   { title: "“Leveraging LinkedIn for Career Growth and Personal Branding”", org: "WAFW Alumni Workshop (international session)" },
+];
+
+// Courses & certifications. `href` is optional — only linked where a public
+// credential URL exists.
+const certifications: { title: string; org: string; when?: string; href?: string }[] = [
+  {
+    title: "UMEED Apprenticeship / Career Readiness Program",
+    org: "UMEED, Hyderabad — CV building, public speaking, digital literacy, negotiation",
+    when: "Oct 2024 – Jan 2025",
+  },
+  {
+    title: "Career Essentials in Generative AI by Microsoft and LinkedIn",
+    org: "LinkedIn Learning — Microsoft Copilot, Generative AI, Responsible AI",
+    when: "Sep 2025",
+    href: "https://www.linkedin.com/learning/certificates/b048e4c6dbb9380712f8678a50f1beb85c202799e5f9bfb05ddd366dbf392fc2/",
+  },
+  {
+    // Title pending — LinkedIn Learning doesn't expose it to an unauthenticated fetch.
+    title: "LinkedIn Learning certificate (title pending)",
+    org: "LinkedIn Learning",
+    when: "Aug 2025",
+    href: "https://www.linkedin.com/learning/certificates/cceff19a1f195d46edb5ac69ed1051142296f542ca2333e92b2e515a74e7a439/",
+  },
+  {
+    title: "100 GIGA Google AI Stack (Beginners Workshop)",
+    org: "100 Girls in Gen AI",
+    when: "Jun 2025",
+    href: "https://www.verix.io/credential/36f8d860-6706-497f-907c-edffff84929e/",
+  },
+  {
+    title: "Data Analytics and Visualization Job Simulation",
+    org: "Accenture North America, via Forage",
+    when: "Sep 2024",
+  },
 ];
 
 // Cyron Tech's projects (the same builds as Vijay's /developers portfolio),
@@ -946,6 +980,28 @@ the first time.
                       <span>{s.org}</span>
                     </li>
                   ))}
+                </ul>
+              </div>
+              <div className="recognition-col">
+                <h4>Courses &amp; certifications</h4>
+                <ul className="recognition-list">
+                  {certifications.map((c) =>
+                    c.href ? (
+                      <li key={c.title}>
+                        <a href={c.href} target="_blank" rel="noopener noreferrer" className="cert-link">
+                          <strong>{c.title}</strong>
+                        </a>
+                        <span>{c.org}</span>
+                        {c.when && <em>{c.when}</em>}
+                      </li>
+                    ) : (
+                      <li key={c.title}>
+                        <strong>{c.title}</strong>
+                        <span>{c.org}</span>
+                        {c.when && <em>{c.when}</em>}
+                      </li>
+                    ),
+                  )}
                 </ul>
               </div>
             </div>
