@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, Check, ChevronDown, Copy, Moon, Sun } from "lucide-react";
 import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
 import { DustText } from "@/components/ui/dust-text";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { MorphingText } from "@/components/ui/morphing-text";
-import { SqueezeCarousel, type SqueezeSlide } from "@/components/ui/squeeze-carousel";
 import { TextAnimate } from "@/components/ui/text-animate";
 import { usePauseOffscreen } from "@/lib/use-pause-offscreen";
 import "../portfolio.css";
@@ -186,77 +186,107 @@ const speaking: { title: string; org: string }[] = [
   { title: "“Leveraging LinkedIn for Career Growth and Personal Branding”", org: "WAFW Alumni Workshop (international session)" },
 ];
 
-// Cyron Tech's projects (from Vijay's /developers portfolio), each with her
-// business-side contribution: client-facing technical requirements, business
-// analysis and feasibility — not the engineering, which is Vijay's case
-// studies to tell.
-const projectSlides: SqueezeSlide[] = [
+// Cyron Tech's projects (the same builds as Vijay's /developers portfolio),
+// each with her business-side contribution: client-facing technical
+// requirements, business development and business analysis — not the
+// engineering, which is his case studies to tell.
+type ProjectCase = {
+  label: string;
+  meta: string;
+  title: string;
+  problem: string;
+  solution: string;
+  impact: string;
+  tags: string[];
+  shots: { src: string; alt: string; wide?: boolean; size?: [number, number] }[];
+};
+
+const work: ProjectCase[] = [
   {
-    id: "ohm-crm",
-    title: "OHM Global CRM —",
-    description:
-      "business analysis and client-side technical requirements for the recruitment agency's desktop CRM.",
-    image: "/portfolio/ohm-global-crm-desktop.png",
-    imageAlt: "OHM Global CRM desktop dashboard",
-    overlay: <span className="text-sm font-medium text-white">Desktop CRM</span>,
+    label: "Mobile app",
+    meta: "OHM Global Opportunities · 2026",
+    title: "The client conversation behind a recruitment agency's app.",
+    problem:
+      "OHM Global Opportunities needed their lead and placement tracking rebuilt, but nobody had mapped how their recruiters actually worked day to day.",
+    solution:
+      "Gathered technical requirements directly with OHM, then ran feasibility and business analysis on each proposed feature against their real workflow before it reached Cyron Tech's engineering team.",
+    impact: "The build matched how OHM actually sells and recruits, instead of forcing their process around someone else's tool.",
+    tags: ["Technical requirements", "Business analysis", "Client liaison"],
+    shots: [{ src: "/portfolio/ohm-global-opportunities.jpg", alt: "OHM Global Opportunities mobile app dashboard" }],
   },
   {
-    id: "ohm-app",
-    title: "OHM Global Opportunities —",
-    description:
-      "requirements gathering and feasibility study that shaped the lead and placement tracking app.",
-    image: "/portfolio/ohm-global-opportunities.jpg",
-    imageAlt: "OHM Global Opportunities mobile app dashboard",
-    overlay: <span className="text-sm font-medium text-white">Mobile app</span>,
+    label: "Desktop CRM",
+    meta: "OHM Global CRM · 2026",
+    title: "Scoping the control room for an overseas recruitment agency.",
+    problem:
+      "OHM's leads arrived from the website, WhatsApp and Meta ads with no single place to see them, and staff needed to know who to call next.",
+    solution:
+      "Business analysis on the client's call-list and lead-flow requirements, feeding directly into what the desktop CRM needed to prioritize first.",
+    impact: "All of OHM's CRM data and website backend are now managed from one dashboard.",
+    tags: ["Business analysis", "Requirements gathering"],
+    shots: [{ src: "/portfolio/ohm-global-crm-desktop.png", alt: "OHM Global CRM on a desktop monitor", wide: true }],
   },
   {
-    id: "synthesis-admin",
-    title: "Synthesis Trust —",
-    description:
-      "client liaison and business analysis for the trust's project management platform and admin panel.",
-    image: "/portfolio/synthesis-trust-admin.png",
-    imageAlt: "Synthesis Trust admin panel",
-    overlay: <span className="text-sm font-medium text-white">Product build</span>,
+    label: "Product build",
+    meta: "Trust Project Management · 2026",
+    title: "Translating a trust's needs into a project system.",
+    problem:
+      "Synthesis Trust needed a central place to create, organize and monitor construction and charity projects, and had no clear spec for what that needed to do.",
+    solution:
+      "Client liaison and technical requirements gathering with the trust, turning loose asks into a scoped feature set for the build team.",
+    impact: "A focused internal tool that turns project information into a structured, searchable system.",
+    tags: ["Client liaison", "Technical requirements"],
+    shots: [{ src: "/portfolio/synthesis-trust-mobile.jpg", alt: "Synthesis Trust mobile app home screen" }],
   },
   {
-    id: "synthesis-mobile",
-    title: "Synthesis Trust Mobile —",
-    description: "technical requirements for the mobile companion to the trust's admin platform.",
-    image: "/portfolio/synthesis-trust-mobile.jpg",
-    imageAlt: "Synthesis Trust mobile app",
-    overlay: <span className="text-sm font-medium text-white">Mobile app</span>,
+    label: "Mobile app",
+    meta: "Synthesis Trust Admin Panel · 2026",
+    title: "Scoping the trust's funds and projects, for a phone.",
+    problem: "Trust staff needed to manage projects and check funds from a phone, not only the desktop dashboard.",
+    solution: "Business analysis on which screens staff actually needed on mobile, and in what priority.",
+    impact: "Project status and the fund position are each visible on a single screen.",
+    tags: ["Business analysis", "Requirements"],
+    shots: [{ src: "/portfolio/synthesis-trust-admin-home.jpg", alt: "Synthesis Trust Admin Panel home screen" }],
   },
   {
-    id: "acuity",
-    title: "Acuity Vision Chart —",
-    description: "client requirements and feasibility for the digital vision chart used by eye doctors.",
-    image: "/portfolio/acuity-vision-chart-tv.png",
-    imageAlt: "Acuity Vision Chart on a TV screen",
-    overlay: <span className="text-sm font-medium text-white">Android TV app</span>,
+    label: "Android TV app",
+    meta: "Acuity Vision Chart · 2026",
+    title: "Requirements for a digital vision chart.",
+    problem: "Eye doctors and optical shops often depend on printed charts or improvised computer setups.",
+    solution: "Client requirements and feasibility study across the full range of optical tests the chart needed to cover.",
+    impact: "In use by many doctors today, running on Android TVs, boxes and emulators.",
+    tags: ["Client requirements", "Feasibility study"],
+    shots: [{ src: "/portfolio/acuity-vision-chart-tv.png", alt: "Acuity Vision Chart on a TV", wide: true }],
   },
   {
-    id: "farmstay",
-    title: "Luxury Farmstay —",
-    description: "business analysis behind the booking site's availability checker.",
-    image: "/portfolio/ira-luxury-farmstay.png",
-    imageAlt: "Luxury Farmstay booking website",
-    overlay: <span className="text-sm font-medium text-white">Booking website</span>,
+    label: "Booking website",
+    meta: "Luxury Farmstay · 2026",
+    title: "Scoping an availability checker, by event type.",
+    problem: "A luxury farmstay near Hyderabad hosts weddings, family gatherings and events, and guests needed a quick way to see whether their dates were free.",
+    solution: "Business analysis on how guests actually search for dates, which shaped the availability checker built into the hero.",
+    impact: "Availability is checked straight from the hero, by event type.",
+    tags: ["Business analysis", "Requirements"],
+    shots: [{ src: "/portfolio/ira-luxury-farmstay.png", alt: "Luxury farmstay home page with the availability checker", wide: true, size: [1897, 889] }],
   },
   {
-    id: "restaurant",
-    title: "Restaurant Booking —",
-    description: "requirements analysis for the reservation site and its admin page.",
-    image: "/portfolio/restaurant-booking-website.png",
-    imageAlt: "Restaurant reservations website",
-    overlay: <span className="text-sm font-medium text-white">Reservations website</span>,
+    label: "Reservations website",
+    meta: "Restaurant Booking · 2026",
+    title: "Requirements for guest and staff-side booking.",
+    problem: "A restaurant needed online reservations for guests and a simple way for staff to manage them.",
+    solution: "Requirements analysis across both sides of the booking flow — the guest-facing form and the admin page.",
+    impact: "Guests book in a few taps, and the floor is managed from one admin page.",
+    tags: ["Requirements analysis"],
+    shots: [{ src: "/portfolio/restaurant-booking-website.png", alt: "Restaurant reservations page", wide: true, size: [1918, 885] }],
   },
   {
-    id: "wafw-site",
-    title: "World Academy for the Future of Women —",
-    description: "client-side requirements for the leadership program's website.",
-    image: "/portfolio/world-academy-future-of-women.png",
-    imageAlt: "World Academy for the Future of Women website",
-    overlay: <span className="text-sm font-medium text-white">Program website</span>,
+    label: "Program website",
+    meta: "World Academy for the Future of Women · 2026",
+    title: "Client-side requirements for a leadership program's site.",
+    problem: "An organization based in Arizona, USA runs a leadership program for women and needed a site that presents the program and the people who deliver it.",
+    solution: "Client-side requirements gathering on what the program and its facilitators needed the site to communicate.",
+    impact: "The program and its facilitators are one click from the home page.",
+    tags: ["Client-side requirements"],
+    shots: [{ src: "/portfolio/world-academy-future-of-women.png", alt: "World Academy for the Future of Women home page", wide: true, size: [1856, 898] }],
   },
 ];
 
@@ -811,106 +841,60 @@ the first time.
               </p>
             </div>
             <div className="cases">
-              <article className="case">
-                <div className="caseart">
-                  <div className="contribcard">
-                    <span className="contriblabel">Technical requirements &amp; business analysis</span>
-                    <ul>
-                      <li>
-                        Gathered and clarified technical requirements directly
-                        with OHM, translating how their recruitment team
-                        actually works into product decisions for Cyron
-                        Tech&apos;s build.
-                      </li>
-                      <li>
-                        Ran feasibility and business analysis on proposed
-                        features against the client&apos;s real workflow, data
-                        and timeline before engineering time went into them.
-                      </li>
-                      <li>
-                        Bridged the gap between what the client asked for and
-                        what the build needed to prioritize first.
-                      </li>
-                    </ul>
+              {work.map((w, idx) => (
+                <article className={idx % 2 ? "case flip" : "case"} key={w.title}>
+                  <div className={w.shots.length > 1 ? "caseart pair" : "caseart"}>
+                    {w.shots.map((shot) =>
+                      shot.wide ? (
+                        <div
+                          className="screen-shot"
+                          style={shot.size ? { aspectRatio: `${shot.size[0]} / ${shot.size[1]}` } : undefined}
+                          key={shot.src}
+                        >
+                          <Image
+                            src={shot.src}
+                            alt={shot.alt}
+                            fill
+                            sizes="(max-width: 800px) 100vw, 1200px"
+                            quality={95}
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <div className="phone small shot" key={shot.src}>
+                          <div className="phone-shot">
+                            <Image
+                              src={shot.src}
+                              alt={shot.alt}
+                              fill
+                              sizes="640px"
+                              quality={95}
+                              loading="lazy"
+                            />
+                          </div>
+                        </div>
+                      ),
+                    )}
                   </div>
-                </div>
-                <div className="casetext">
-                  <div className="case-top">
-                    <span>Technical requirements &amp; business analysis</span>
-                    <span>OHM Global Opportunities · Cyron Tech build · 2026</span>
+                  <div className="casetext">
+                    <div className="case-top">
+                      <span>{w.label}</span>
+                      <span>{w.meta}</span>
+                    </div>
+                    <h3>{w.title}</h3>
+                    <div className="casegrid">
+                      <Block title="Problem">{w.problem}</Block>
+                      <Block title="Solution">{w.solution}</Block>
+                      <Block title="Impact">{w.impact}</Block>
+                    </div>
+                    <div className="tags">
+                      {w.tags.map((t) => (
+                        <span key={t}>{t}</span>
+                      ))}
+                    </div>
                   </div>
-                  <h3>A client&apos;s CRM, scoped before a line of code.</h3>
-                  <div className="casegrid">
-                    <Block title="Problem">
-                      OHM Global Opportunities&apos; lead and placement tracking
-                      lived in scattered spreadsheets, and nobody had mapped how
-                      their team actually worked day to day.
-                    </Block>
-                    <Block title="Solution">
-                      Sat with OHM to understand their real workflow, then
-                      checked each proposed feature against it for feasibility
-                      before it reached Cyron Tech&apos;s engineering team.
-                    </Block>
-                    <Block title="Impact">
-                      The build matched how OHM actually sells and recruits,
-                      instead of forcing their process around someone
-                      else&apos;s tool.
-                    </Block>
-                  </div>
-                  <div className="tags">
-                    {["Technical requirements", "Business analysis", "Feasibility study", "Client relationship"].map((t) => (
-                      <span key={t}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </article>
-
-              <article className="case flip">
-                <div className="caseart">
-                  <div className="contribcard">
-                    <span className="contriblabel">Across Cyron Tech&apos;s client builds</span>
-                    <ul>
-                      <li>Synthesis Trust — project management platform and admin panel.</li>
-                      <li>OHM Global Opportunities — mobile app and desktop CRM.</li>
-                      <li>Acuity Vision Chart, Luxury Farmstay, Restaurant Booking, World Academy for the Future of Women.</li>
-                    </ul>
-                  </div>
-                </div>
-                <div className="casetext">
-                  <div className="case-top">
-                    <span>Business development &amp; business analysis</span>
-                    <span>Cyron Tech portfolio · 2026</span>
-                  </div>
-                  <h3>The same groundwork, behind every build.</h3>
-                  <div className="casegrid">
-                    <Block title="Problem">
-                      Every client build starts as a loose ask — Cyron Tech
-                      needs it scoped into something engineering can actually
-                      build against.
-                    </Block>
-                    <Block title="Solution">
-                      Technical requirements, business development and business
-                      analysis across Cyron Tech&apos;s projects — the client
-                      conversations that shape what gets built and in what
-                      order.
-                    </Block>
-                    <Block title="Impact">
-                      Each build starts from what the client actually needs,
-                      not a guess at it.
-                    </Block>
-                  </div>
-                  <div className="tags">
-                    {["Business development", "Business analysis", "Requirements", "Client liaison"].map((t) => (
-                      <span key={t}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </article>
-            </div>
-
-            <div className="projectshowcase">
-              <p className="showcaselabel">{"// every Cyron Tech build, and her part in it"}</p>
-              <SqueezeCarousel slides={projectSlides} height="clamp(200px, 30cqi, 320px)" />
+                </article>
+              ))}
             </div>
           </section>
 

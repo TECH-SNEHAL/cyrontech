@@ -12,19 +12,6 @@
    for a code dependency graph with the organizations and programs she's worked across. */
 .pf-root .orgnode rect{fill:var(--surface)}
 
-/* The featured case (OHM CRM) has no screenshots to show yet, so its art side is a
-   quote-style card instead of a phone/screen frame. */
-.pf-root .contribcard{display:flex;flex-direction:column;justify-content:center;gap:18px;width:100%;padding:36px;border:2px solid var(--frame);border-radius:28px;background:var(--surface);box-shadow:0 30px 80px -30px var(--glow-frame)}
-.pf-root .contribcard .contriblabel{font:13px var(--font-pf-mono),monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.1em}
-.pf-root .contribcard ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
-.pf-root .contribcard li{position:relative;padding-left:22px;font-size:15px;line-height:1.65;color:var(--muted)}
-.pf-root .contribcard li:before{content:"";position:absolute;left:0;top:.6em;width:7px;height:7px;background:var(--accent);transform:rotate(45deg)}
-
-/* Project showcase: the SqueezeCarousel over Cyron Tech's real builds, themed to
-   match the page's own accent instead of its own default primary token. */
-.pf-root .projectshowcase{margin-top:70px;--sq-accent:var(--accent);--sq-accent-foreground:var(--on-accent)}
-.pf-root .showcaselabel{font:13px var(--font-pf-mono),monospace;color:var(--muted);margin:0 0 20px}
-
 /* Recognition: awards and speaking, as two plain ruled columns. */
 .pf-root .recognition-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-top:70px;border-top:1px solid var(--line);padding-top:50px}
 .pf-root .recognition-col h4{font:500 14px var(--font-pf-mono),monospace;color:var(--accent);text-transform:uppercase;letter-spacing:.14em;margin:0 0 28px}
