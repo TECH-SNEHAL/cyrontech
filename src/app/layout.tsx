@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
+import { LenisScroll } from "@/components/lenis-scroll";
 
 const SITE_URL = "https://cyrontech.in";
 
@@ -163,6 +164,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {/* Transitions are switched off during a theme change by the toggle itself (see
             ThemeToggle). The provider's own option for that also runs as every page opens. */}
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          <LenisScroll />
           {children}
           <SmoothCursor />
         </ThemeProvider>
