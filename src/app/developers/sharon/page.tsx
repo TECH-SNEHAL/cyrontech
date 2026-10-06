@@ -1,10 +1,24 @@
 import type { Metadata } from "next";
-import { Profile } from "./profile";
+import { DM_Mono, Inter } from "next/font/google";
+import SharonProfile from "./profile";
+
+const mono = DM_Mono({
+  weight: ["400", "500"],
+  variable: "--font-pf-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const sans = Inter({
+  variable: "--font-pf-sans",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const SITE_URL = "https://cyrontech.in";
-const TITLE = "Sharon Sunaina Mohan · Business & CRM";
+const TITLE = "Sharon Sunaina Mohan · Project & Client Management";
 const DESCRIPTION =
-  "Sharon Sunaina Mohan — client requirements, feasibility studies, and CRM operations for Cyron Tech, and an MSc student in AI for Business Intelligence.";
+  "Sharon Sunaina Mohan — project management, client relationship management and business operations for Cyron Tech, and an MSc student in AI for Business Intelligence.";
 const SHARE_IMAGE = {
   url: "/opengraph-image",
   width: 1200,
@@ -49,7 +63,7 @@ const PROFILE_JSON_LD = {
     name: "Sharon Sunaina Mohan",
     givenName: "Sharon",
     familyName: "Sunaina Mohan",
-    jobTitle: "Business & CRM",
+    jobTitle: "Project Manager & Client Relationship Management",
     description: DESCRIPTION,
     url: `${SITE_URL}/developers/sharon`,
     email: "sharonsunaina7@gmail.com",
@@ -59,9 +73,10 @@ const PROFILE_JSON_LD = {
     ],
     worksFor: { "@id": `${SITE_URL}/#organization` },
     knowsAbout: [
-      "CRM operations",
+      "Project management",
+      "Client relationship management",
       "Zoho CRM",
-      "Client requirements gathering",
+      "Requirements gathering",
       "Feasibility studies",
       "Artificial intelligence for business",
       "Data analysis",
@@ -71,14 +86,14 @@ const PROFILE_JSON_LD = {
 
 export default function SharonPage() {
   return (
-    <>
+    <div className={`${mono.variable} ${sans.variable}`}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(PROFILE_JSON_LD).replace(/</g, "\\u003c"),
         }}
       />
-      <Profile />
-    </>
+      <SharonProfile />
+    </div>
   );
 }
