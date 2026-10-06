@@ -7,6 +7,7 @@ import { DiaTextReveal } from "@/components/ui/dia-text-reveal";
 import { DustText } from "@/components/ui/dust-text";
 import { ParticleTextEffect } from "@/components/ui/interactive-text-particle";
 import { MorphingText } from "@/components/ui/morphing-text";
+import { SqueezeCarousel, type SqueezeSlide } from "@/components/ui/squeeze-carousel";
 import { TextAnimate } from "@/components/ui/text-animate";
 import { usePauseOffscreen } from "@/lib/use-pause-offscreen";
 import "../portfolio.css";
@@ -36,14 +37,14 @@ const career: LogEntry[] = [
   {
     tag: "work",
     when: "2026 →",
-    title: "Client requirements & feasibility — Cyron Tech",
-    org: "OHM Global Opportunities, CRM & App",
+    title: "Technical requirements, business development & business analysis",
+    org: "Cyron Tech",
     points: [
-      "Gathered and clarified client requirements directly with the agency, translating how their recruitment team actually works into product decisions.",
-      "Ran feasibility checks on proposed features against the agency's real workflow, data and timeline before engineering time went into them.",
-      "Bridged the gap between what the client asked for and what the build needed to prioritize first.",
+      "Works client-side across Cyron Tech's builds: gathering and clarifying technical requirements, translating how a client's team actually works into product decisions.",
+      "Runs feasibility and business analysis on proposed features against the client's real workflow, data and timeline before engineering time goes into them.",
+      "For OHM Global Opportunities' CRM and app — a Cyron Tech build for the recruitment agency client — bridged the gap between what the client asked for and what the build needed to prioritize first.",
     ],
-    chips: ["Requirements", "Feasibility study", "CRM"],
+    chips: ["Technical requirements", "Business development", "Business analysis"],
   },
   {
     tag: "education",
@@ -123,6 +124,45 @@ const career: LogEntry[] = [
     points: ["Led a team of 20 student representatives for a student body of 4,000+."],
   },
   {
+    tag: "work",
+    when: "Jan – Dec 2025",
+    title: "Student Ambassador, WE Enable Program",
+    org: "WE Hub — Government of Telangana",
+    points: [
+      "Selected among 120 students for a competitive entrepreneurship development programme.",
+      "Supported outreach reaching 600+ students across 20+ institutions in Hyderabad.",
+      "Awarded the Ambassador Leadership Award — 1 of 30 students from 600+ across 20+ universities.",
+    ],
+    chips: ["Outreach", "Award"],
+  },
+  {
+    tag: "leadership",
+    when: "2024",
+    title: "Project Lead, 'Blooming Flowers'",
+    org: "World Academy for the Future of Women (India Chapter)",
+    points: [
+      "Led a team of volunteers delivering life-skills education sessions in government schools.",
+      "Reached 200+ students from underserved communities across Hyderabad.",
+    ],
+  },
+  {
+    tag: "work",
+    when: "Oct 2024 – Jan 2025",
+    title: "UMEED Apprenticeship / Career Readiness Program",
+    org: "UMEED, Hyderabad",
+    points: [
+      "Personal and professional development: CV building, public speaking, digital literacy, negotiation.",
+      "Later invited back as a beneficiary speaker at OFSI Sangam 2025.",
+    ],
+  },
+  {
+    tag: "leadership",
+    when: "2026 →",
+    title: "Peer Mentor",
+    org: "University of Leicester Students' Union",
+    points: ["Supports new postgraduate students in settling into university life."],
+  },
+  {
     tag: "education",
     when: "2022 → 2025",
     title: "B.Sc. Data Science, Computer Science & Mathematics",
@@ -131,10 +171,99 @@ const career: LogEntry[] = [
   },
 ];
 
+// Awards & recognition — shown as a strip under the career log.
+const awards: { title: string; org: string; when: string }[] = [
+  { title: "1st Place — International Student Consultancy Challenge", org: "University of Leicester / Student Circus / Career Hub", when: "Mar 2026" },
+  { title: "1st Place — Women in STEM × PHAT Buns UK Ideathon", org: "University of Leicester", when: "Mar 2026" },
+  { title: "Winner, Case Study Competition", org: "LinkedIn Campus Connect, LinkedIn HQ Bangalore", when: "Sep 2025" },
+  { title: "Ambassador Leadership Award", org: "WE Enable Programme, WE Hub — 1 of 30 from 600+ students", when: "Dec 2025" },
+];
+
+// Speaking engagements — panels and sessions.
+const speaking: { title: string; org: string }[] = [
+  { title: "Panelist, Youth & Entrepreneurship", org: "Telangana Rising Global Summit 2025" },
+  { title: "Alumna Panelist", org: "OFSI Sangam 2025, Omega Healthcare Management Services" },
+  { title: "“Leveraging LinkedIn for Career Growth and Personal Branding”", org: "WAFW Alumni Workshop (international session)" },
+];
+
+// Cyron Tech's projects (from Vijay's /developers portfolio), each with her
+// business-side contribution: client-facing technical requirements, business
+// analysis and feasibility — not the engineering, which is Vijay's case
+// studies to tell.
+const projectSlides: SqueezeSlide[] = [
+  {
+    id: "ohm-crm",
+    title: "OHM Global CRM —",
+    description:
+      "business analysis and client-side technical requirements for the recruitment agency's desktop CRM.",
+    image: "/portfolio/ohm-global-crm-desktop.png",
+    imageAlt: "OHM Global CRM desktop dashboard",
+    overlay: <span className="text-sm font-medium text-white">Desktop CRM</span>,
+  },
+  {
+    id: "ohm-app",
+    title: "OHM Global Opportunities —",
+    description:
+      "requirements gathering and feasibility study that shaped the lead and placement tracking app.",
+    image: "/portfolio/ohm-global-opportunities.jpg",
+    imageAlt: "OHM Global Opportunities mobile app dashboard",
+    overlay: <span className="text-sm font-medium text-white">Mobile app</span>,
+  },
+  {
+    id: "synthesis-admin",
+    title: "Synthesis Trust —",
+    description:
+      "client liaison and business analysis for the trust's project management platform and admin panel.",
+    image: "/portfolio/synthesis-trust-admin.png",
+    imageAlt: "Synthesis Trust admin panel",
+    overlay: <span className="text-sm font-medium text-white">Product build</span>,
+  },
+  {
+    id: "synthesis-mobile",
+    title: "Synthesis Trust Mobile —",
+    description: "technical requirements for the mobile companion to the trust's admin platform.",
+    image: "/portfolio/synthesis-trust-mobile.jpg",
+    imageAlt: "Synthesis Trust mobile app",
+    overlay: <span className="text-sm font-medium text-white">Mobile app</span>,
+  },
+  {
+    id: "acuity",
+    title: "Acuity Vision Chart —",
+    description: "client requirements and feasibility for the digital vision chart used by eye doctors.",
+    image: "/portfolio/acuity-vision-chart-tv.png",
+    imageAlt: "Acuity Vision Chart on a TV screen",
+    overlay: <span className="text-sm font-medium text-white">Android TV app</span>,
+  },
+  {
+    id: "farmstay",
+    title: "Luxury Farmstay —",
+    description: "business analysis behind the booking site's availability checker.",
+    image: "/portfolio/ira-luxury-farmstay.png",
+    imageAlt: "Luxury Farmstay booking website",
+    overlay: <span className="text-sm font-medium text-white">Booking website</span>,
+  },
+  {
+    id: "restaurant",
+    title: "Restaurant Booking —",
+    description: "requirements analysis for the reservation site and its admin page.",
+    image: "/portfolio/restaurant-booking-website.png",
+    imageAlt: "Restaurant reservations website",
+    overlay: <span className="text-sm font-medium text-white">Reservations website</span>,
+  },
+  {
+    id: "wafw-site",
+    title: "World Academy for the Future of Women —",
+    description: "client-side requirements for the leadership program's website.",
+    image: "/portfolio/world-academy-future-of-women.png",
+    imageAlt: "World Academy for the Future of Women website",
+    overlay: <span className="text-sm font-medium text-white">Program website</span>,
+  },
+];
+
 // Org map: the organizations and programs she's worked across, drawn as the same kind
 // of node graph his stack section uses for code modules.
 const orgs: [string, string, string[]][] = [
-  ["Cyron Tech", "Client requirements and feasibility for the OHM CRM build.", ["Requirements", "Feasibility"]],
+  ["Cyron Tech", "Technical requirements, business development and business analysis across client builds, including OHM Global Opportunities' CRM.", ["Requirements", "Business analysis"]],
   ["WE Hub", "CRM Operations Intern, Govt. of Telangana — T-Hub, Hyderabad.", ["Zoho CRM", "Data ops"]],
   ["WAFW", "Student Co-Director, then India Alumni Representative.", ["Leadership", "Alumni data"]],
   ["LinkedIn", "Campus Ambassador — 1 of 5 selected, WE Enable top performer.", ["Branding", "Content"]],
@@ -144,18 +273,20 @@ const orgs: [string, string, string[]][] = [
   ["UMEED", "Career readiness apprenticeship; later a beneficiary speaker.", ["CV & comms"]],
 ];
 const MAP_W = 880;
-const MAP_H = 220;
+const MAP_H = 260;
 const NODE_W = 170;
 const NODE_H = 50;
+// Two rows of four, each node at least NODE_W + 40px from its row neighbours so
+// nothing overlaps: row 1 at x = 115, 335, 555, 775; row 2 the same, offset down.
 const nodePos: [number, number][] = [
-  [440, 40],
-  [220, 150],
-  [440, 150],
-  [660, 150],
-  [110, 40],
-  [770, 40],
-  [330, 40],
-  [550, 150],
+  [115, 60],  // 0 Cyron Tech
+  [335, 60],  // 1 WE Hub
+  [555, 60],  // 2 WAFW
+  [775, 60],  // 3 LinkedIn
+  [115, 200], // 4 U. of Leicester
+  [335, 200], // 5 Osmania University
+  [555, 200], // 6 Student Union
+  [775, 200], // 7 UMEED
 ];
 const orgEdges: [number, number][] = [
   [1, 0],
@@ -171,7 +302,20 @@ function linkPath(a: number, b: number): string {
   const [bx, by] = nodePos[b];
   const side = Math.sign(bx - ax);
   if (ay === by) {
-    return `M ${ax + (side * NODE_W) / 2} ${ay} L ${bx - (side * NODE_W) / 2} ${by}`;
+    // Same row: if another node sits between them, bow the line above the row
+    // so it never passes through that node; otherwise a straight line is fine.
+    const lo = Math.min(ax, bx);
+    const hi = Math.max(ax, bx);
+    const passesThrough = nodePos.some(
+      ([x, y], i) => y === ay && i !== a && i !== b && x > lo && x < hi,
+    );
+    if (!passesThrough) {
+      return `M ${ax + (side * NODE_W) / 2} ${ay} L ${bx - (side * NODE_W) / 2} ${by}`;
+    }
+    const x1 = ax + (side * NODE_W) / 2;
+    const x2 = bx - (side * NODE_W) / 2;
+    const bow = ay - NODE_H * 0.9;
+    return `M ${x1} ${ay} C ${x1} ${bow}, ${x2} ${bow}, ${x2} ${by}`;
   }
   const y2 = by - NODE_H / 2;
   const x1 = ax + side * 22;
@@ -182,8 +326,8 @@ function linkPath(a: number, b: number): string {
 }
 
 const skills: [string, string[]][] = [
-  ["project-management", ["Scoping & planning", "Stakeholder liaison", "Requirements gathering", "Feasibility studies"]],
-  ["client-relationships", ["Client relationship management", "Zoho CRM", "Leads, Contacts, Accounts, Deals", "Workflow automation"]],
+  ["technical-requirements", ["Requirements gathering", "Feasibility studies", "Scoping & planning", "Client-to-engineering translation"]],
+  ["business-analysis", ["Business development", "Stakeholder liaison", "Client relationship management", "Zoho CRM"]],
   [
     "ai-ml",
     ["Supervised & unsupervised learning", "Image classification (CNN)", "Natural language processing", "Neural networks (foundational)"],
@@ -206,6 +350,7 @@ const sections = [
   ["identity", "Identity"],
   ["experience", "Experience"],
   ["work", "Work"],
+  ["recognition", "Recognition"],
   ["network", "Network"],
   ["contact", "Contact"],
 ] as const;
@@ -421,7 +566,7 @@ export default function SharonProfile() {
               className="nameparticles"
             />
             <h1>
-              <BlurIn>She turns</BlurIn>{" "}
+              <BlurIn>I turn</BlurIn>{" "}
               <DustText text="requirements" speed={1.4} delay={0.2} density={HEADLINE_DUST} />{" "}
               <BlurIn delay={0.1}>into</BlurIn>{" "}
               <em>
@@ -497,17 +642,19 @@ export default function SharonProfile() {
             <div className="identity-grid">
               <div>
                 <p className="lead">
-                  I&apos;m <strong>Sharon Sunaina Mohan</strong>, a project manager
-                  and client relationship lead, and an MSc student in AI for
-                  Business Intelligence at the University of Leicester. I turn a
+                  I&apos;m <strong>Sharon Sunaina Mohan</strong>, handling
+                  technical requirements, business development and business
+                  analysis for Cyron Tech, and an MSc student in AI for Business
+                  Intelligence at the University of Leicester. I turn a
                   client&apos;s loose idea of what they want into something a
                   build team can actually scope and deliver.
                 </p>
                 <p>
-                  On Cyron Tech&apos;s OHM Global Opportunities CRM, that meant
-                  sitting with the agency, understanding how their recruiters
-                  actually work day to day, and checking what was feasible before
-                  engineering time went into it.
+                  On OHM Global Opportunities&apos; CRM and app — a Cyron Tech
+                  build for the recruitment agency client — that meant sitting
+                  with OHM, understanding how their recruiters actually work day
+                  to day, and checking what was feasible before engineering time
+                  went into it.
                 </p>
                 <p>
                   Outside of that, my background is student leadership, client
@@ -651,7 +798,7 @@ the first time.
             <SectionHead num="03" title="selected work" />
             <div className="workintro">
               <h2>
-                <SlideUp>One build,</SlideUp>
+                <SlideUp>Requirements,</SlideUp>
                 <br />
                 <i>
                   <SlideUp delay={0.15}>scoped right.</SlideUp>
@@ -659,24 +806,26 @@ the first time.
               </h2>
               <p>
                 Where the requirement meets the build — a client&apos;s real
-                workflow, checked for feasibility, before a line of code goes in.
+                workflow, checked for feasibility, before a line of code goes
+                in. The same role across Cyron Tech&apos;s client builds.
               </p>
             </div>
             <div className="cases">
               <article className="case">
                 <div className="caseart">
                   <div className="contribcard">
-                    <span className="contriblabel">Project management &amp; client relationship</span>
+                    <span className="contriblabel">Technical requirements &amp; business analysis</span>
                     <ul>
                       <li>
-                        Gathered and clarified client requirements directly with
-                        the agency, translating how their recruitment team
-                        actually works into product decisions.
+                        Gathered and clarified technical requirements directly
+                        with OHM, translating how their recruitment team
+                        actually works into product decisions for Cyron
+                        Tech&apos;s build.
                       </li>
                       <li>
-                        Ran feasibility checks on proposed features against the
-                        agency&apos;s real workflow, data and timeline before
-                        engineering time went into them.
+                        Ran feasibility and business analysis on proposed
+                        features against the client&apos;s real workflow, data
+                        and timeline before engineering time went into them.
                       </li>
                       <li>
                         Bridged the gap between what the client asked for and
@@ -687,39 +836,125 @@ the first time.
                 </div>
                 <div className="casetext">
                   <div className="case-top">
-                    <span>Project management &amp; client relationship</span>
-                    <span>OHM Global Opportunities · 2026</span>
+                    <span>Technical requirements &amp; business analysis</span>
+                    <span>OHM Global Opportunities · Cyron Tech build · 2026</span>
                   </div>
-                  <h3>Managing the client relationship behind the CRM build.</h3>
+                  <h3>A client&apos;s CRM, scoped before a line of code.</h3>
                   <div className="casegrid">
                     <Block title="Problem">
-                      A recruitment agency&apos;s lead and placement tracking
+                      OHM Global Opportunities&apos; lead and placement tracking
                       lived in scattered spreadsheets, and nobody had mapped how
-                      the team actually worked day to day.
+                      their team actually worked day to day.
                     </Block>
-                    <Block title="Her role">
-                      Sat with the agency to understand the real workflow, then
+                    <Block title="Solution">
+                      Sat with OHM to understand their real workflow, then
                       checked each proposed feature against it for feasibility
-                      before it reached engineering.
+                      before it reached Cyron Tech&apos;s engineering team.
                     </Block>
                     <Block title="Impact">
-                      The build matched how the agency actually sells and
-                      recruits, instead of forcing their process around someone
+                      The build matched how OHM actually sells and recruits,
+                      instead of forcing their process around someone
                       else&apos;s tool.
                     </Block>
                   </div>
                   <div className="tags">
-                    {["Project management", "Client relationships", "Feasibility study", "Stakeholder liaison"].map((t) => (
+                    {["Technical requirements", "Business analysis", "Feasibility study", "Client relationship"].map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+              </article>
+
+              <article className="case flip">
+                <div className="caseart">
+                  <div className="contribcard">
+                    <span className="contriblabel">Across Cyron Tech&apos;s client builds</span>
+                    <ul>
+                      <li>Synthesis Trust — project management platform and admin panel.</li>
+                      <li>OHM Global Opportunities — mobile app and desktop CRM.</li>
+                      <li>Acuity Vision Chart, Luxury Farmstay, Restaurant Booking, World Academy for the Future of Women.</li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="casetext">
+                  <div className="case-top">
+                    <span>Business development &amp; business analysis</span>
+                    <span>Cyron Tech portfolio · 2026</span>
+                  </div>
+                  <h3>The same groundwork, behind every build.</h3>
+                  <div className="casegrid">
+                    <Block title="Problem">
+                      Every client build starts as a loose ask — Cyron Tech
+                      needs it scoped into something engineering can actually
+                      build against.
+                    </Block>
+                    <Block title="Solution">
+                      Technical requirements, business development and business
+                      analysis across Cyron Tech&apos;s projects — the client
+                      conversations that shape what gets built and in what
+                      order.
+                    </Block>
+                    <Block title="Impact">
+                      Each build starts from what the client actually needs,
+                      not a guess at it.
+                    </Block>
+                  </div>
+                  <div className="tags">
+                    {["Business development", "Business analysis", "Requirements", "Client liaison"].map((t) => (
                       <span key={t}>{t}</span>
                     ))}
                   </div>
                 </div>
               </article>
             </div>
+
+            <div className="projectshowcase">
+              <p className="showcaselabel">{"// every Cyron Tech build, and her part in it"}</p>
+              <SqueezeCarousel slides={projectSlides} height="clamp(200px, 30cqi, 320px)" />
+            </div>
+          </section>
+
+          <section id="recognition" className="section">
+            <SectionHead num="04" title="recognition" />
+            <div className="workintro">
+              <h2>
+                <SlideUp>Wins, panels</SlideUp>
+                <br />
+                <i>
+                  <SlideUp delay={0.15}>and sessions.</SlideUp>
+                </i>
+              </h2>
+              <p>Competitions placed in, and rooms spoken in, along the way.</p>
+            </div>
+            <div className="recognition-grid">
+              <div className="recognition-col">
+                <h4>Awards &amp; competitions</h4>
+                <ul className="recognition-list">
+                  {awards.map((a) => (
+                    <li key={a.title}>
+                      <strong>{a.title}</strong>
+                      <span>{a.org}</span>
+                      <em>{a.when}</em>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="recognition-col">
+                <h4>Speaking</h4>
+                <ul className="recognition-list">
+                  {speaking.map((s) => (
+                    <li key={s.title}>
+                      <strong>{s.title}</strong>
+                      <span>{s.org}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </section>
 
           <section id="network" className="section stack">
-            <SectionHead num="04" title="network" />
+            <SectionHead num="05" title="network" />
             <div className="stackintro">
               <h2>
                 <SlideUp>Built across</SlideUp>
@@ -859,7 +1094,7 @@ the first time.
           </section>
 
           <section id="contact" className="section contact">
-            <SectionHead num="05" title="contact" />
+            <SectionHead num="06" title="contact" />
             <div className="availability">
               leicester, uk · open to placement roles · from feb 2027
             </div>
