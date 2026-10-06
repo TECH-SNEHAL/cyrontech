@@ -1258,7 +1258,8 @@ becomes something people can use.
         </main>
 
         <footer>
-          © 2026 Vijay Snehal · From idea to useful product, one commit at a time.
+          © 2026 Vijay Snehal · From idea to useful product, one commit at a time. ·{" "}
+          <a href="/developers/sharon">Sharon Sunaina Mohan ↗</a>
         </footer>
       </div>
     </div>
