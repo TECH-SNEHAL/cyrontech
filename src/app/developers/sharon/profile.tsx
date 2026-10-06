@@ -299,7 +299,7 @@ const orgs: [string, string, string[]][] = [
   ["WAFW", "Student Co-Director, then India Alumni Representative.", ["Leadership", "Alumni data"]],
   ["LinkedIn", "Campus Ambassador — 1 of 5 selected, WE Enable top performer.", ["Branding", "Content"]],
   ["U. of Leicester", "MSc AI for Business Intelligence, College Academic Rep.", ["AI", "BI"]],
-  ["Osmania University", "B.Sc. Data Science, CS & Mathematics — First Class, 93%.", ["Data Science"]],
+  ["Osmania Univ.", "B.Sc. Data Science, CS & Mathematics — First Class, 93%.", ["Data Science"]],
   ["Student Union", "General Secretary, then VP of the Women Empowerment Cell.", ["4,000+ students"]],
   ["UMEED", "Career readiness apprenticeship; later a beneficiary speaker.", ["CV & comms"]],
 ];
