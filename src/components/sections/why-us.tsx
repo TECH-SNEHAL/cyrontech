@@ -1,9 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Users, Cpu, Clock, Headphones } from "lucide-react";
+import {
+  Users,
+  Cpu,
+  Clock,
+  Headphones,
+  Gem,
+  Handshake,
+  Gauge,
+  Lightbulb,
+  ShieldCheck,
+  Hammer,
+} from "lucide-react";
 import { CountUp } from "@/components/count-up";
+import { Marquee } from "@/components/ui/marquee";
 import { TextAnimate } from "@/components/ui/text-animate";
+import { useCursorHover } from "@/components/ui/smooth-cursor";
 import VaporizeTextCycle from "@/components/ui/vapour-text-effect";
 
 // The three promises from the hero's "What we make" panel, shown one at a time.
@@ -18,7 +31,8 @@ const STATS = [
     target: 5,
     suffix: "+ yrs",
     label: "Experienced Team",
-    description: "Senior engineers and designers across web, mobile, and cloud.",
+    description:
+      "Engineers trained at IIT- and NIT-caliber institutes, plus universities abroad.",
     icon: Users,
   },
   {
@@ -43,6 +57,85 @@ const STATS = [
     icon: Headphones,
   },
 ];
+
+const VALUES = [
+  {
+    n: "01",
+    label: "Excellence",
+    description: "Quality isn't an act, it's a habit. We obsess over the details to ensure seamless impact.",
+    icon: Gem,
+    color: "text-emerald-400",
+    tile: "bg-emerald-400/15",
+  },
+  {
+    n: "02",
+    label: "Collaboration",
+    description: "Great minds work together. We foster an environment where ideas are freely shared.",
+    icon: Handshake,
+    color: "text-rose-400",
+    tile: "bg-rose-400/15",
+  },
+  {
+    n: "03",
+    label: "Agility",
+    description: "The market moves fast, and so do we. Adapting quickly to challenges is our superpower.",
+    icon: Gauge,
+    color: "text-amber-400",
+    tile: "bg-amber-400/15",
+  },
+  {
+    n: "04",
+    label: "Innovation",
+    description: "We chase the better way, not just the familiar one. Fresh thinking shapes everything we ship.",
+    icon: Lightbulb,
+    color: "text-sky-400",
+    tile: "bg-sky-400/15",
+  },
+  {
+    n: "05",
+    label: "Integrity",
+    description: "Honest timelines, honest pricing, honest advice — even when it isn't what you want to hear.",
+    icon: ShieldCheck,
+    color: "text-violet-400",
+    tile: "bg-violet-400/15",
+  },
+  {
+    n: "06",
+    label: "Craftsmanship",
+    description: "Code we'd put our own name on. Built to last, not just to launch.",
+    icon: Hammer,
+    color: "text-teal-400",
+    tile: "bg-teal-400/15",
+  },
+];
+
+function ValueCard({ value }: { value: (typeof VALUES)[number] }) {
+  const Icon = value.icon;
+  const hoverRef = useCursorHover<HTMLDivElement>();
+
+  return (
+    <div
+      ref={hoverRef}
+      className="group relative w-72 shrink-0 overflow-hidden rounded-2xl border border-background/10 bg-background/[0.03] p-6 transition-colors duration-200 hover:border-background/20 hover:bg-background/[0.05] sm:w-80"
+    >
+      {/* large faint number watermark, like the reference */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-2 -top-3 select-none font-mono text-7xl font-bold text-background/5"
+      >
+        {value.n}
+      </span>
+
+      <div className={`relative flex size-11 items-center justify-center rounded-xl ${value.tile} transition-transform duration-300 group-hover:scale-110`}>
+        <Icon className={`size-5 ${value.color}`} strokeWidth={1.75} />
+      </div>
+      <h3 className="relative mt-5 text-lg font-bold">{value.label}</h3>
+      <p className="relative mt-2 text-sm leading-relaxed text-background/55">
+        {value.description}
+      </p>
+    </div>
+  );
+}
 
 export function WhyUs() {
   return (
@@ -114,6 +207,28 @@ export function WhyUs() {
           );
         })}
       </motion.div>
+
+      {/* what we stand for: an auto-scrolling wall, full-bleed off the section padding */}
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, delay: 0.15 }}
+        className="relative mx-auto mt-20 max-w-7xl text-center"
+      >
+        <p className="text-xs font-semibold uppercase tracking-widest text-primary">
+          What drives us
+        </p>
+      </motion.div>
+      <div className="relative mt-8 -mx-6 overflow-hidden md:-mx-12">
+        <Marquee pauseOnHover repeat={2} className="[--duration:45s]">
+          {VALUES.map((v) => (
+            <ValueCard key={v.label} value={v} />
+          ))}
+        </Marquee>
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-foreground sm:w-32" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-foreground sm:w-32" />
+      </div>
     </section>
   );
 }

@@ -126,43 +126,46 @@ export function Services() {
             return (
               <div
                 key={s.title}
-                className="group rounded-2xl border border-border bg-card p-6 transition duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10"
+                className="group relative flex flex-col rounded-2xl border border-border bg-card p-6 transition-colors duration-200 hover:border-primary/30"
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex size-11 items-center justify-center rounded-xl bg-accent transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
-                    <Icon className="size-5 text-primary" strokeWidth={1.75} />
+                <div className="flex items-center justify-between">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-accent transition-colors duration-200 group-hover:bg-primary/15">
+                    <Icon className="size-[18px] text-primary" strokeWidth={1.75} />
                   </div>
-                  <span className="font-mono text-xs text-foreground/25">
+                  <span className="font-mono text-[11px] tabular-nums text-foreground/30">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold text-foreground">
+                <h3 className="mt-5 text-base font-semibold text-foreground">
                   {s.title}
                 </h3>
-                <p className="mt-1 text-xs font-medium uppercase tracking-wide text-primary/80">
+                <p className="mt-1 text-xs font-medium text-primary/70">
                   {s.tagline}
                 </p>
                 <p className="mt-3 text-sm leading-relaxed text-foreground/60">
                   {s.description}
                 </p>
 
-                <div className="mt-5 flex flex-wrap gap-1.5">
+                <ul className="mt-5 space-y-1.5 border-t border-border pt-4">
                   {s.capabilities.map((cap) => (
-                    <span
+                    <li
                       key={cap}
-                      className="rounded-md bg-secondary px-2 py-1 text-[11px] font-medium text-foreground/60"
+                      className="flex items-center gap-2 text-xs text-foreground/55"
                     >
+                      <span className="size-1 rounded-full bg-primary/50" />
                       {cap}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                </ul>
 
-                {/* slides in only once the card is hovered */}
-                <span className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary opacity-0 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100">
+                <a
+                  href="#contact"
+                  className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-foreground/70 transition-colors duration-200 group-hover:text-primary"
+                >
                   Talk to us
-                  <ArrowRight className="size-3.5" />
-                </span>
+                  <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </a>
               </div>
             );
           })}

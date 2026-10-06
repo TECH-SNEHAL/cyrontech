@@ -2,16 +2,16 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Quote } from "lucide-react";
+import { Play, Quote, Sparkles } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Marquee } from "@/components/ui/marquee";
 import { TextAnimate } from "@/components/ui/text-animate";
-import { VIDEO_REVIEW, VIDEO_REVIEW_HEADER } from "@/lib/video-review";
+import { useCursorHover } from "@/components/ui/smooth-cursor";
+import { VIDEO_REVIEWS, videoReviewHeader, type VideoReview } from "@/lib/video-review";
 
 // Reviews from real projects we've shipped — see PROJECTS in portfolio.tsx.
 const REVIEWS = [
   { name: "Rohan Nair", role: "CEO, OHM Global Opportunities", body: "The platform took our hiring from scattered spreadsheets to tracking every lead and placement in one place. Understood our workflow from day one.", color: "bg-primary" },
-  { name: "Krishna Prasad", role: "Project Manager, Synthesis Trust", body: "Between the admin panel and the mobile view, our whole team can track project deadlines without a single spreadsheet anymore.", color: "bg-emerald-500" },
   { name: "Jerrie", role: "CEO, World Academy for the Future of Women (USA)", body: "The site captures exactly who we are — powerful and easy for participants across the world to navigate.", color: "bg-rose-400" },
   { name: "Ananya Iyer", role: "Resort Manager, Luxury Farmstay", body: "Guests can check availability and book in seconds now. Reservations have never been this smooth for us.", color: "bg-teal-500" },
   { name: "Raja Naidu", role: "Restaurant Manager", body: "The booking site paid for itself in the first month. Simple for guests, even simpler for us to manage.", color: "bg-orange-500" },
@@ -52,20 +52,28 @@ function ReviewCard({ review }: { review: (typeof REVIEWS)[number] }) {
   );
 }
 
-// The video review, laid out like a tweet card: who it is from, a line about
-// them, then the clip. It is a file of ours rather than a post on X, so there
-// is no X logo or link.
-function VideoReviewCard({ className = "" }: { className?: string }) {
-  const [who, from] = VIDEO_REVIEW_HEADER;
+// A real video review, laid out like a tweet card: who it is from, a line
+// about them, then the clip. It is a file of ours rather than a post on X,
+// so there is no X logo or link.
+function VideoReviewCard({
+  review,
+  className = "",
+}: {
+  review: VideoReview;
+  className?: string;
+}) {
+  const [who, from] = videoReviewHeader(review);
+  const hoverRef = useCursorHover<HTMLElement>();
 
   return (
     <figure
-      className={`w-full min-w-0 max-w-[19rem] flex-col gap-4 rounded-xl border border-border bg-card p-5 ${className}`}
+      ref={hoverRef}
+      className={`w-full min-w-0 max-w-[19rem] flex-col gap-4 rounded-xl border border-border bg-card p-5 transition-shadow duration-300 hover:shadow-lg hover:shadow-primary/5 ${className}`}
     >
       <figcaption className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <Image
-            src={VIDEO_REVIEW.avatar}
+            src={review.avatar!}
             alt=""
             width={48}
             height={48}
@@ -79,25 +87,49 @@ function VideoReviewCard({ className = "" }: { className?: string }) {
         <Quote aria-hidden className="size-5 shrink-0 text-muted-foreground" />
       </figcaption>
 
-      <p className="text-[15px] leading-relaxed text-foreground">
-        {VIDEO_REVIEW.background}
-      </p>
+      {review.background && (
+        <p className="text-[15px] leading-relaxed text-foreground">
+          {review.background}
+        </p>
+      )}
 
       <video
         controls
         playsInline
         preload="none"
-        poster={VIDEO_REVIEW.poster}
-        width={VIDEO_REVIEW.width}
-        height={VIDEO_REVIEW.height}
-        aria-label={`Video review from the ${VIDEO_REVIEW.role} of ${VIDEO_REVIEW.org}`}
+        poster={review.poster}
+        width={review.width}
+        height={review.height}
+        aria-label={`Video review from the ${review.role} of ${review.org}`}
         className="h-auto w-full rounded-xl border border-border bg-muted object-cover shadow-sm"
-        style={{ aspectRatio: `${VIDEO_REVIEW.width} / ${VIDEO_REVIEW.height}` }}
+        style={{ aspectRatio: `${review.width} / ${review.height}` }}
       >
-        <source src={VIDEO_REVIEW.video} type="video/mp4" />
+        <source src={review.video!} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
     </figure>
+  );
+}
+
+// A reserved slot for a review that hasn't arrived yet — keeps the wall from
+// looking thin while more clips are being collected.
+function ComingSoonCard({ className = "" }: { className?: string }) {
+  const hoverRef = useCursorHover<HTMLDivElement>();
+
+  return (
+    <div
+      ref={hoverRef}
+      style={{ aspectRatio: "478 / 850" }}
+      className={`flex w-full min-w-0 max-w-[19rem] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-card/40 p-5 text-center ${className}`}
+    >
+      <span className="flex size-12 items-center justify-center rounded-full bg-primary/10">
+        <Play aria-hidden className="size-5 translate-x-0.5 text-primary/60" strokeWidth={1.75} />
+      </span>
+      <p className="text-sm font-medium text-foreground/70">More stories coming soon</p>
+      <p className="text-xs leading-relaxed text-muted-foreground">
+        A few more client reviews are on the way.
+      </p>
+    </div>
   );
 }
 
@@ -137,8 +169,28 @@ export function Testimonials() {
         </p>
       </motion.div>
 
-      {/* phones and tablets: the video review sits above the wall */}
-      <VideoReviewCard className="mx-auto mb-10 flex lg:hidden" />
+      {/* video testimonials: the real review plus reserved slots for the ones still coming in */}
+      <div className="mx-auto mb-16 max-w-7xl">
+        <div className="mb-6 flex items-center justify-center gap-2 text-center">
+          <Sparkles aria-hidden className="size-3.5 text-primary/60" />
+          <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+            Video testimonials
+          </span>
+        </div>
+        <div className="relative overflow-hidden">
+          <Marquee pauseOnHover repeat={2} className="[--duration:50s]">
+            {VIDEO_REVIEWS.map((review, i) =>
+              review.video ? (
+                <VideoReviewCard key={review.name ?? i} review={review} />
+              ) : (
+                <ComingSoonCard key={`coming-soon-${i}`} />
+              )
+            )}
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-background sm:w-32" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-background sm:w-32" />
+        </div>
+      </div>
 
       {/* mobile: single horizontal row */}
       <div className="relative mx-auto max-w-[100rem] overflow-hidden sm:hidden">
@@ -151,15 +203,13 @@ export function Testimonials() {
         <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-background" />
       </div>
 
-      {/* sm and up: two vertical columns; from lg the video review stands between them */}
+      {/* sm and up: two vertical columns of text reviews */}
       <div className="relative mx-auto hidden h-[34rem] max-w-7xl gap-4 overflow-hidden sm:grid sm:grid-cols-2 lg:flex lg:h-[42rem] lg:justify-center">
         <Marquee vertical pauseOnHover repeat={2} className="h-full [--duration:36s] lg:shrink-0">
           {col1.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />
           ))}
         </Marquee>
-        {/* z-10 keeps it clear of the fades at the top and bottom of the wall */}
-        <VideoReviewCard className="relative z-10 hidden self-center lg:flex" />
         <Marquee vertical reverse pauseOnHover repeat={2} className="h-full [--duration:36s] lg:shrink-0">
           {col2.map((r) => (
             <ReviewCard key={r.name + r.role} review={r} />

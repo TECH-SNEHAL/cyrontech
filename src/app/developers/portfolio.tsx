@@ -1005,7 +1005,7 @@ becomes something people can use.
                 <div className="caseart">
                   <figure className="reviewcard">
                     <figcaption>
-                      <Image src={VIDEO_REVIEW.avatar} alt="" width={48} height={48} />
+                      <Image src={VIDEO_REVIEW.avatar!} alt="" width={48} height={48} />
                       <div>
                         <b>{VIDEO_REVIEW_HEADER[0]}</b>
                         <span>{VIDEO_REVIEW_HEADER[1]}</span>
@@ -1022,7 +1022,7 @@ becomes something people can use.
                       aria-label={`Video review from the ${VIDEO_REVIEW.role} of ${VIDEO_REVIEW.org}`}
                       style={{ aspectRatio: `${VIDEO_REVIEW.width} / ${VIDEO_REVIEW.height}` }}
                     >
-                      <source src={VIDEO_REVIEW.video} type="video/mp4" />
+                      <source src={VIDEO_REVIEW.video!} type="video/mp4" />
                       Your browser does not support the video tag.
                     </video>
                   </figure>

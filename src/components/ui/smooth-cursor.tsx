@@ -26,8 +26,42 @@ const DESKTOP_POINTER_QUERY =
 // Set on <html> while the cursor runs; globals.css hides the system cursor under it.
 const ACTIVE_CLASS = "smooth-cursor-on"
 
+// Any element can opt in to a cursor reaction by adding this attribute and
+// dispatching the two events below on enter/leave (see useCursorHover).
+const HOVER_TARGET_ATTR = "data-cursor-hover"
+const HOVER_ENTER_EVENT = "cursor-hover-enter"
+const HOVER_LEAVE_EVENT = "cursor-hover-leave"
+
 function isTrackablePointer(pointerType: string) {
   return pointerType !== "touch"
+}
+
+/**
+ * Opts an element into the smooth cursor's hover reaction: the pointer
+ * grows into a soft ring while over it. Attach the returned ref to the
+ * element that should trigger it.
+ */
+export function useCursorHover<T extends HTMLElement>() {
+  const ref = useRef<T>(null)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+
+    el.setAttribute(HOVER_TARGET_ATTR, "")
+    const enter = () => window.dispatchEvent(new CustomEvent(HOVER_ENTER_EVENT))
+    const leave = () => window.dispatchEvent(new CustomEvent(HOVER_LEAVE_EVENT))
+
+    el.addEventListener("pointerenter", enter)
+    el.addEventListener("pointerleave", leave)
+
+    return () => {
+      el.removeEventListener("pointerenter", enter)
+      el.removeEventListener("pointerleave", leave)
+    }
+  }, [])
+
+  return ref
 }
 
 const DefaultCursorSVG: FC = () => {
@@ -108,6 +142,7 @@ export function SmoothCursor({
   const accumulatedRotation = useRef(0)
   const [isEnabled, setIsEnabled] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
 
   const cursorX = useSpring(0, springConfig)
   const cursorY = useSpring(0, springConfig)
@@ -121,6 +156,29 @@ export function SmoothCursor({
     stiffness: 500,
     damping: 35,
   })
+  const ringScale = useSpring(0, { stiffness: 350, damping: 28, mass: 0.8 })
+  const isHoveringRef = useRef(false)
+
+  useEffect(() => {
+    if (!isEnabled) return
+
+    const onEnter = () => setIsHovering(true)
+    const onLeave = () => setIsHovering(false)
+
+    window.addEventListener(HOVER_ENTER_EVENT, onEnter)
+    window.addEventListener(HOVER_LEAVE_EVENT, onLeave)
+
+    return () => {
+      window.removeEventListener(HOVER_ENTER_EVENT, onEnter)
+      window.removeEventListener(HOVER_LEAVE_EVENT, onLeave)
+    }
+  }, [isEnabled])
+
+  useEffect(() => {
+    isHoveringRef.current = isHovering
+    ringScale.set(isHovering ? 1 : 0)
+    scale.set(isHovering ? 0 : 1)
+  }, [isHovering, ringScale, scale])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(DESKTOP_POINTER_QUERY)
@@ -193,15 +251,18 @@ export function SmoothCursor({
         rotation.set(accumulatedRotation.current)
         previousAngle.current = currentAngle
 
-        scale.set(0.95)
+        // the hover ring owns the arrow's scale while over a hoverable target
+        if (!isHoveringRef.current) {
+          scale.set(0.95)
 
-        if (timeout !== null) {
-          clearTimeout(timeout)
+          if (timeout !== null) {
+            clearTimeout(timeout)
+          }
+
+          timeout = setTimeout(() => {
+            if (!isHoveringRef.current) scale.set(1)
+          }, 150)
         }
-
-        timeout = setTimeout(() => {
-          scale.set(1)
-        }, 150)
       }
     }
 
@@ -239,31 +300,58 @@ export function SmoothCursor({
   }
 
   return (
-    <motion.div
-      style={{
-        position: "fixed",
-        // Moved with a transform, not left/top: a transform is handled by the compositor,
-        // while left/top would lay the page out again on every frame the pointer moves.
-        left: 0,
-        top: 0,
-        x: cursorX,
-        y: cursorY,
-        translateX: "-50%",
-        translateY: "-50%",
-        rotate: rotation,
-        scale: scale,
-        zIndex: 100,
-        pointerEvents: "none",
-        willChange: "transform",
-        opacity: isVisible ? 1 : 0,
-      }}
-      initial={false}
-      animate={{ opacity: isVisible ? 1 : 0 }}
-      transition={{
-        duration: 0.15,
-      }}
-    >
-      {cursor}
-    </motion.div>
+    <>
+      <motion.div
+        style={{
+          position: "fixed",
+          // Moved with a transform, not left/top: a transform is handled by the compositor,
+          // while left/top would lay the page out again on every frame the pointer moves.
+          left: 0,
+          top: 0,
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+          rotate: rotation,
+          scale: scale,
+          zIndex: 100,
+          pointerEvents: "none",
+          willChange: "transform",
+          opacity: isVisible ? 1 : 0,
+        }}
+        initial={false}
+        animate={{ opacity: isVisible ? 1 : 0 }}
+        transition={{
+          duration: 0.15,
+        }}
+      >
+        {cursor}
+      </motion.div>
+      {/* a soft ring that grows in place of the arrow over cursor-hover targets */}
+      <motion.div
+        aria-hidden
+        style={{
+          position: "fixed",
+          left: 0,
+          top: 0,
+          x: cursorX,
+          y: cursorY,
+          translateX: "-50%",
+          translateY: "-50%",
+          scale: ringScale,
+          zIndex: 100,
+          pointerEvents: "none",
+          willChange: "transform",
+          opacity: isVisible ? 1 : 0,
+          width: 56,
+          height: 56,
+          borderRadius: "9999px",
+          border: "1.5px solid var(--primary)",
+          backgroundColor: "color-mix(in oklch, var(--primary) 15%, transparent)",
+          backdropFilter: "blur(2px)",
+        }}
+        initial={false}
+      />
+    </>
   )
 }
