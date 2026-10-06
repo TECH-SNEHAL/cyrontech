@@ -17,3 +17,13 @@
 .pf-root .recognition-list em{font:12px var(--font-pf-mono),monospace;font-style:normal;color:var(--faint)}
 @media(max-width:800px){.pf-root .recognition-grid{grid-template-columns:1fr;gap:40px;margin-top:50px;padding-top:36px}}
 
+/* Section heads on a phone: the big outlined number and the title were tight enough
+   together to force a mid-word break (seen on "experience"). Shrinking the number and
+   letting the row wrap, rather than the word itself, is the safer fix than tuning yet
+   another width threshold. */
+@media(max-width:480px){
+  .pf-root .sectionhead{flex-wrap:wrap;row-gap:4px}
+  .pf-root .sectionhead span{font-size:48px}
+  .pf-root .sectionhead b{overflow-wrap:normal;word-break:normal}
+}
+

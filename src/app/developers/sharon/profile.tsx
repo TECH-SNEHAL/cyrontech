@@ -374,8 +374,10 @@ const GITHUB_URL = "https://github.com/Sharonsunaina7";
 
 const headlineWords = ["workable projects.", "client relationships.", "business outcomes."];
 const HEADLINE_DUST = 3;
-const contactPhrases = ["a CRM to untangle?", "a requirement to scope?", "a project to plan?"];
-const QUESTION_WRAP = "max-[349px]:whitespace-normal";
+const contactPhrases = ["a CRM to untangle?", "a requirement?", "a project to plan?"];
+// Vijay's page tunes this for phrases under ~16 characters; these run longer,
+// so the line needs to wrap on more phones, not just the narrowest ones.
+const QUESTION_WRAP = "max-[480px]:whitespace-normal";
 
 const sections = [
   ["identity", "Identity"],
