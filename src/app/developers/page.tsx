@@ -70,7 +70,6 @@ const PROFILE_JSON_LD = {
     jobTitle: "Software Engineer",
     description: DESCRIPTION,
     url: `${SITE_URL}/developers`,
-    image: `${SITE_URL}/team/vijay-snehal-blue-polo.png`,
     worksFor: { "@id": `${SITE_URL}/#organization` },
     knowsAbout: [
       "Flutter",
