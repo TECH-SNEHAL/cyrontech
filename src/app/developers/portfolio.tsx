@@ -614,7 +614,6 @@ export default function Portfolio() {
                 {label}
               </button>
             ))}
-            <a href="/developers/sharon">Sharon ↗</a>
           </nav>
           <div className="headend">
             <span className="status">
@@ -1259,8 +1258,7 @@ becomes something people can use.
         </main>
 
         <footer>
-          © 2026 Vijay Snehal · From idea to useful product, one commit at a time. ·{" "}
-          <a href="/developers/sharon">Sharon Sunaina Mohan ↗</a>
+          © 2026 Vijay Snehal · From idea to useful product, one commit at a time.
         </footer>
       </div>
     </div>
