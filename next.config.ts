@@ -1,27 +1,18 @@
 import type { NextConfig } from "next";
 
+// Cloudflare: the whole site is built as plain files (`next build` -> out/), served free by Cloudflare.
+// Cache headers for /public folders live in public/_headers (Next's headers() doesn't apply to plain files).
 const nextConfig: NextConfig = {
+  output: "export",
   devIndicators: false,
   images: {
-    // 75 is the default every image uses; 95 is for photos and app screenshots that must stay sharp.
+    // plain files: no image server, so photos are made small at build time (see scripts/optimize-images.mjs)
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
     qualities: [75, 95],
-  },
-  async headers() {
-    return [
-      {
-        // Logos, icons, posters and clips served straight from /public. By default they carry
-        // max-age=0, so every visit asks the server about each file again (about forty requests
-        // on /developers). They rarely change: a browser may reuse them for a day, and for a
-        // week after that while it checks for a newer copy in the background.
-        source: "/:folder(skills|logos|brand|reviews|videos)/:file*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "public, max-age=86400, stale-while-revalidate=604800",
-          },
-        ],
-      },
-    ];
+    // fewer sizes than Next's default list = fewer files to make; phones, laptops and big screens still covered
+    deviceSizes: [640, 828, 1200, 1920],
+    imageSizes: [64, 128, 256, 384],
   },
 };
 

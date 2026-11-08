@@ -1,0 +1,17 @@
+// Cyron Tech website on Cloudflare (account vijaysnehal1234). Plain files only: `npm run build:cf` makes out/,
+// then `npx wrangler deploy`. Plain files are free and don't count toward the daily request limit.
+{
+  "name": "cyrontech",
+  "account_id": "fa851ad6cce28900b922b4b7988eabdb",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  // the real addresses (DNS lives in Cloudflare since 2026-11-08; Zoho email records are kept there)
+  "routes": [
+    { "pattern": "cyrontech.in", "custom_domain": true },
+    { "pattern": "www.cyrontech.in", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}

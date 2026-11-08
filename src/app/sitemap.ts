@@ -29,3 +29,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 }
+
+// Cloudflare build makes plain files: this one is made once at build time
+export const dynamic = "force-static";
